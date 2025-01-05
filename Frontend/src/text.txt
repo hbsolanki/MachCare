@@ -1,0 +1,11 @@
+1. Industrial & Tech-Inspired Theme (Gray + Orange + White)
+This combination is popular for mechanical engineering and industrial projects, as it blends a sleek, technical look with an accent of energy.
+
+Primary Color: Charcoal Gray (#333333) - Gives a professional and industrial feel.
+Accent Color: Safety Orange (#FF6A13) - Adds vibrancy, drawing attention to key elements like buttons and icons.
+Secondary Color: White (#FFFFFF) - Balances the darker tones, ensuring readability and clarity.
+Background Color: Light Gray (#F5F5F5) - A softer background that doesn’t overwhelm the eyes.
+Example Usage:
+Primary Text: Charcoal Gray
+Background: Light Gray or White
+Accent elements (buttons, icons, links): Safety Orange
