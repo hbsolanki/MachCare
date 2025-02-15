@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom"
 
 function Footer() {
   return (
@@ -8,24 +9,24 @@ function Footer() {
         <div className="container mx-auto text-center">
           <h3 className="text-2xl font-semibold mb-4">Follow Us</h3>
           <div className="mb-6">
-            <a
-              href="https://www.facebook.com/machcare"
+            <Link
+              to="https://www.facebook.com/machcare"
               className="text-gray-300 hover:text-orange-500 mx-3"
             >
               Facebook
-            </a>
-            <a
-              href="https://twitter.com/machcare"
+            </Link>
+            <Link
+              to="https://twitter.com/machcare"
               className="text-gray-300 hover:text-orange-500 mx-3"
             >
               Twitter
-            </a>
-            <a
-              href="https://www.instagram.com/machcare"
+            </Link>
+            <Link
+              to="https://www.instagram.com/machcare"
               className="text-gray-300 hover:text-orange-500 mx-3"
             >
               Instagram
-            </a>
+            </Link>
           </div>
           <p className="text-lg mb-4">
             Quality vehicle services, maintenance, and repairs. We keep your

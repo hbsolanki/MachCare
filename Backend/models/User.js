@@ -1,15 +1,9 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  username: {
+  name: {
     type: String,
     required: true,
-  },
-  mobile: {
-    type: String,
-    required: true,
-    minlength: 10, 
-    maxlength: 10,
   },
   email: {
     type: String,
@@ -19,16 +13,24 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  mobileNo: {
+    type: String,
+    required: true,
+    minlength: 10, 
+    maxlength: 10,
+  },
   plan:[
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "plan"
+      ref: "plan",
+      default : []
     }
   ],
   registered_vehicles:[
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "vehicle"
+      ref: "vehicle",
+      default : []
     }
   ]
 });

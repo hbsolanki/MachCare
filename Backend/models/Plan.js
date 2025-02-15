@@ -13,7 +13,11 @@ const PlanSchema =  new mongoose.Schema({
     type: Number,
     required : true,
   },
-  services:[String]
+  services:{
+    type : [String],
+    default : [],
+    required : true
+  }
 });
 
 const Plan = mongoose.model("Plan",PlanSchema);

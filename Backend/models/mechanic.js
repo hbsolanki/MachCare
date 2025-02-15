@@ -1,14 +1,9 @@
 const mongoose = require('mongoose');
 
 const mechanicSchema = new mongoose.Schema({
-    username: {
+    name: {
         type: String,
         required: true,
-    },
-    mobile: {
-        type: String,
-        required: true,
-        length: 10,
     },
     email: {
         type: String,
@@ -17,6 +12,11 @@ const mechanicSchema = new mongoose.Schema({
     password:{
         type: String,
         required: true,
+    },
+    mobile: {
+        type: String,
+        required: true,
+        length: 10,
     },
     rating:{
         type: Number,
