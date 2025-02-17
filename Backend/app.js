@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const port = 8080;
 
+const { User, Admin, Mechanic, Dealer } = require("./models/index");
+
 // requiring necessary dependencies
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -16,7 +18,6 @@ main()
 async function main() {
   await mongoose.connect(process.env.DB_URL);
 }
-
 
 // using cors to avoid CORS ERROR
 app.use(
@@ -51,11 +52,21 @@ app.listen(port, () => {
 app.post("/login", async (req, res) => {
   const userData = req.body;
   const token = await dbVerify(userData);
-  if(token){
+  if (token) {
     res.cookie("token", token, {
       httpOnly: true, // Prevents access from JavaScript (for security)
     });
-    res.status(200).send("cookie send successful");
+
+    let model = null;
+    if (userData.role == "user") model = User;
+    else if (userData.role == "mechanic") model = Mechanic;
+    else if (userData.role == "dealer") model = Dealer;
+    else console.log("invalid role");
+
+    const dbUser = await model.findOne({ email: userData.email });
+    const id = dbUser._id;
+
+    res.status(200).send({ message: "Cookie sent successfully", id });
     return;
   }
   res.status(401).send("user authentication failed");

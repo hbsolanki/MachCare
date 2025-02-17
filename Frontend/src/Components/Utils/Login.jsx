@@ -18,6 +18,7 @@ const Login = () => {
       });
 
       if (res.status === 200) {
+        localStorage.setItem('useId', res.data.id);
         navigate("/");
       }
 
