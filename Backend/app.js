@@ -17,6 +17,7 @@ async function main() {
   await mongoose.connect(process.env.DB_URL);
 }
 
+
 // using cors to avoid CORS ERROR
 app.use(
   cors({
@@ -26,7 +27,7 @@ app.use(
   })
 );
 
-// parse application/x-www-form-urlencoded
+// parse application/x-www-orm-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
@@ -36,7 +37,7 @@ const userRouter = require("./Router/user");
 const dealerRouter = require("./Router/dealer");
 const mechanicRouter = require("./Router/mechanic");
 const AdminRouter = require("./Router/admin");
-const dbVerify = require("./auth/DBverify");
+const dbVerify = require("./auth/dbVerify");
 
 app.use("/user", userRouter);
 app.use("/mechanic", mechanicRouter);
@@ -57,7 +58,7 @@ app.post("/login", async (req, res) => {
     res.status(200).send("cookie send successful");
     return;
   }
-  res.send("user authentication failed");
+  res.status(401).send("user authentication failed");
 });
 // routes
 app.get("/", (req, res) => {
