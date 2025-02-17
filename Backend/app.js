@@ -50,10 +50,14 @@ app.listen(port, () => {
 app.post("/login", async (req, res) => {
   const userData = req.body;
   const token = await dbVerify(userData);
-  res.cookie("token", token, {
-    httpOnly: true, // Prevents access from JavaScript (for security)
-  });
-  res.status(200).send("cookie send successful");
+  if(token){
+    res.cookie("token", token, {
+      httpOnly: true, // Prevents access from JavaScript (for security)
+    });
+    res.status(200).send("cookie send successful");
+    return;
+  }
+  res.send("user authentication failed");
 });
 // routes
 app.get("/", (req, res) => {

@@ -3,7 +3,6 @@ const comparePassword = require("../helper/compareHash");
 const sendToken = require("../auth/sendToken");
 
 async function dbVerify(userData) {
-    
   // selecting model according to user
   let model = null;
   if (userData.role == "user") model = User;
@@ -13,15 +12,21 @@ async function dbVerify(userData) {
 
   // verifying user with db and send token
   try {
+
     const dbUser = await model.findOne({ email: userData.email });
+
     if (dbUser) {
-      if (comparePassword(userData.password, dbUser.password)) {
+
+      if (await comparePassword(userData.password, dbUser.password)) {
         const token = sendToken(dbUser);
-        if (token) return token;
-        return null;
+        return token;
       } else {
         console.log("user is not valid");
+        return null;
       }
+
+    } else {
+      console.log("user not found");
     }
   } catch (error) {
     console.log(error);

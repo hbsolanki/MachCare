@@ -35,9 +35,9 @@ const Login = () => {
               {...register("role", { required: "Please select role" })}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="dealer">Dealer</option>
               <option value="user">User</option>
               <option value="mechanic">Mechanic</option>
+              <option value="dealer">Dealer</option>
             </select>
             {errors.role && (
               <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>
@@ -65,7 +65,7 @@ const Login = () => {
               {...register("email", {
                 required: "Email is required",
                 pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]/,
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                   message: "Invalid email format",
                 },
               })}

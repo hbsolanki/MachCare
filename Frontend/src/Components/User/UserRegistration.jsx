@@ -59,7 +59,7 @@ function UserRegistration() {
                 required: "Email is required",
                 pattern: {
                   // regex to validate email pattern
-                  value:/^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                  value:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                   message: "Invalid email format",
                 }
               })}
