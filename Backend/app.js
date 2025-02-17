@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = 8080;
@@ -6,8 +7,6 @@ const port = 8080;
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
-const getHashPassword = require("./helper/getHash");
 
 // connecting to mongoose server
 main()
@@ -15,7 +14,7 @@ main()
   .catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/MechCare");
+  await mongoose.connect(process.env.DB_URL);
 }
 
 // using cors to avoid CORS ERROR
@@ -29,31 +28,38 @@ app.use(
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
-
 // parse application/json
 app.use(bodyParser.json());
 
-// requring modals
-const { User, Dealer, Vehicle, Plan, Mechanic } = require("./models/index");
+// require routers
+const userRouter = require("./Router/user");
+const dealerRouter = require("./Router/dealer");
+const mechanicRouter = require("./Router/mechanic");
+const AdminRouter = require("./Router/admin");
+const dbVerify = require("./auth/DBverify");
+
+app.use("/user", userRouter);
+app.use("/mechanic", mechanicRouter);
+app.use("/dealer", dealerRouter);
+app.use("/admin", AdminRouter);
 
 app.listen(port, () => {
   console.log(`Server Listen on Port ${port}`);
 });
 
+app.post("/login", async (req, res) => {
+  const userData = req.body;
+  const token = await dbVerify(userData);
+  res.cookie("token", token, {
+    httpOnly: true, // Prevents access from JavaScript (for security)
+  });
+  res.status(200).send("cookie send successful");
+});
 // routes
 app.get("/", (req, res) => {
   res.send("root here");
 });
 
-
-app.post("/user/new", async (req, res) => {
-  const userData = req.body;
-  userData.password = await getHashPassword(userData.password);
-  try {
-    const user = new User(userData);
-    const data = await user.save();
-    res.send(data);
-  } catch (error) {
-    console.log(error);
-  }
+app.get("*", (req, res) => {
+  res.send("you have made req to wrong route");
 });

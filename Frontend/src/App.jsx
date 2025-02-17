@@ -7,11 +7,12 @@ import Page404 from "./Components/Utils/Page404";
 import Feedback from "./Components/Utils/Feedback";
 import ContactUs from "./Components/Utils/ContactUs";
 import About from "./Components/Utils/About";
+import Login from "./Components/Utils/Login";
 
 //User
 import User from "./Components/User/User";
 import UserRegistration from "./Components/User/UserRegistration";
-import UserLogin from "./Components/User/UserLogin";
+import UserVehicleRegistration from "./Components/User/UserVehicleRegistration";
 import UserProfile from "./Components/User/Profile";
 import UserProfileEdit from ".//Components/User/ProfileEdit";
 
@@ -32,10 +33,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Index />} />
 
+          {/* login route */}
+          <Route path="/login" element={<Login/>} />
+          
           {/* //User */}
           <Route path="/user" element={<User />} />
           <Route path="/user/registration" element={<UserRegistration />} />
-          <Route path="/user/login" element={<UserLogin />} />
+          <Route path="/user/vehicle/registration" element={<UserVehicleRegistration />} />
           <Route path="/user/profile" element={<UserProfile />} />
           <Route path="/user/profile/edit" element={<UserProfileEdit />}/>
 

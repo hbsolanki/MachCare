@@ -23,10 +23,16 @@ function Index() {
             Registration User
           </Link>
           <Link
-            to="/user/login"
+            to="/login"
             className="bg-yellow-500 text-white py-3 px-8 rounded-lg text-xl sm:text-2xl hover:bg-yellow-400 transition duration-300"
           >
             Login User
+          </Link>
+          <Link
+            to="/user/vehicle/registration"
+            className="bg-yellow-500 text-white py-3 px-8 rounded-lg text-xl sm:text-2xl hover:bg-yellow-400 transition duration-300"
+          >
+            Add vehicle
           </Link>
         </div>
       </section>

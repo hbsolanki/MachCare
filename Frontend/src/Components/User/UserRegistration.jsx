@@ -54,14 +54,14 @@ function UserRegistration() {
             <input
               type="email"
               id="email"
-              placeholder="enter email address"
+              placeholder="enter email address like hello@example.com"
               {...register("email", {
                 required: "Email is required",
                 pattern: {
                   // regex to validate email pattern
                   value:/^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
                   message: "Invalid email format",
-                },
+                }
               })}
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 focus:outline-none"
             />

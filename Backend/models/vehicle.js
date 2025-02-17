@@ -1,10 +1,14 @@
 const mongoose = require("mongoose");
 
-
 const vehicleSchema = new mongoose.Schema({
   type: {
     type: String,
     enum: ["bike", "car"],
+    required: true,
+  },
+  fuelType: {
+    type: String,
+    enum: ["ev", "petrol", "diesel", "CNG"],
     required: true,
   },
   model: {
@@ -20,6 +24,6 @@ const vehicleSchema = new mongoose.Schema({
   },
 });
 
-const Vehicle = mongoose.model('Vehicle',vehicleSchema);
+const Vehicle = mongoose.model("Vehicle", vehicleSchema);
 
 module.exports = Vehicle;

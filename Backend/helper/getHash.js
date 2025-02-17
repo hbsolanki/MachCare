@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 async function getHashPassword(password) {
-  const saltRounds = 10;
+  const saltRounds = process.env.SALT_ROUNDS || 10;
   try {
     const hash = await bcrypt.hash(password, saltRounds);
     return hash;
