@@ -14,7 +14,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 // route to add new user to db
-router.post("/new", async (req, res) => {
+router.post("/signup", async (req, res) => {
   const userData = req.body;
   userData.password = await getHashPassword(userData.password);
   try {
@@ -35,9 +35,9 @@ router.post("/vehicle/new", async (req, res) => {
 router
   .route("/update")
   .all(verifyToken)
-  .get(async (req,res,next)=>{
+  .get(async (req, res, next) => {
     const dbUser = await User.findById(req.id);
-    if(dbUser){
+    if (dbUser) {
       console.log(dbUser);
       res.send(dbUser);
       return;

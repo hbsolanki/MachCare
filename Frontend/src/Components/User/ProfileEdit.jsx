@@ -1,23 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import axios from "axios";
+import { getGlobalVariable } from "../../globalVariable";
+const Backend = getGlobalVariable();
 
 function ProfileEdit() {
   useEffect(() => {
-    try {
-      const fetchData = async () => {
-        const formData = await axios.get("http://localhost:8080/user/update", {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${Backend}/API/user/update`, {
           withCredentials: true,
         });
-        console.log(formData.data);
-      };
+        console.log(res.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
 
-      fetchData();
-    } catch (error) {
-        console.log(error);
-    }
-  },[]);
+    fetchData();
+  }, []);
 
   const {
     register,
@@ -25,90 +26,91 @@ function ProfileEdit() {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const updatingProfile = (data) => {
-    console.log("hi i am in the form submission");
+  const updatingProfile = async (data) => {
+    try {
+      const res = await axios.post(`${Backend}/API/user/update`, data);
+      console.log(res);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Update failed. Please try again.");
+    }
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit(updatingProfile)}>
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            &nbsp; Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            placeholder="enter your name"
-            {...register("name", { required: "name is required" })}
-            className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 focus:outline-none"
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-          )}
-        </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 sm:p-8">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+          Edit Profile
+        </h2>
 
-        <div>
-          <label
-            htmlFor="mobileNo"
-            className="block text-sm font-medium text-gray-700"
-          >
-            &nbsp;Mobile no
-          </label>
-          <input
-            type="String"
-            id="mobileNo"
-            placeholder="enter mobile number"
-            {...register("mobileNo", {
-              required: "mobile number is required",
-              pattern: {
-                // regex to validate mobile number
-                value: /^\d{10}$/,
-                message: "mobile number must be of 10 digits",
-              },
-            })}
-            className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 focus:outline-none"
-          />
-          {errors.mobileNo && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.mobileNo.message}
-            </p>
-          )}
-        </div>
+        <form onSubmit={handleSubmit(updatingProfile)} className="space-y-5">
+          {/* Name Field */}
+          <div>
+            <label className="block text-gray-700 font-medium">Name</label>
+            <input
+              type="text"
+              {...register("name", { required: "Name is required" })}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+              placeholder="Enter your name"
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
+          </div>
 
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
+          {/* Mobile Number Field */}
+          <div>
+            <label className="block text-gray-700 font-medium">Mobile No</label>
+            <input
+              type="text"
+              {...register("mobileNo", {
+                required: "Mobile number is required",
+                pattern: {
+                  value: /^\d{10}$/,
+                  message: "Mobile number must be 10 digits",
+                },
+              })}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+              placeholder="Enter your mobile number"
+            />
+            {errors.mobileNo && (
+              <p className="text-red-500 text-sm">{errors.mobileNo.message}</p>
+            )}
+          </div>
+
+          {/* Password Field */}
+          <div>
+            <label className="block text-gray-700 font-medium">Password</label>
+            <input
+              type="password"
+              {...register("password", {
+                required: "Password is required",
+                pattern: {
+                  value: /^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                  message:
+                    "Must be 8+ chars, include a number & special character",
+                },
+              })}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+              placeholder="Enter new password"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
+            )}
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300"
           >
-            &nbsp;Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            {...register("password", {
-              required: "Password is required",
-              pattern: {
-                value: /^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-                message:
-                  "Password must be at least 8 characters long and include a number and special character",
-              },
-            })}
-            className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 focus:outline-none"
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-        <input type="submit" />
-      </form>
-    </>
+            {isSubmitting ? "Updating..." : "Update Profile"}
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
 
