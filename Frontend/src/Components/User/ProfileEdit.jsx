@@ -1,91 +1,85 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function ProfileEdit() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     try {
       const fetchData = async () => {
         const formData = await axios.get("http://localhost:8080/user/update", {
           withCredentials: true,
         });
-        console.log(formData.data);
+        formData.data.password = "";
+        reset(formData.data);
       };
-
       fetchData();
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-  },[]);
+  }, []);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm();
-
-  const updatingProfile = (data) => {
-    console.log("hi i am in the form submission");
+  const updatingProfile = async (data) => {
+    const result = await axios.post("http://localhost:8080/user/update", data,{
+      withCredentials: false,
+    })
+    if(result.status === 200) {
+        navigate("/");
+    }
+    else{
+      console.log("error while updating profile");
+    }
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit(updatingProfile)}>
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            &nbsp; Name
-          </label>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <form
+        onSubmit={handleSubmit(updatingProfile)}
+        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
+      >
+        <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">Edit Profile</h2>
+        
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-600">Name</label>
           <input
             type="text"
             id="name"
-            placeholder="enter your name"
-            {...register("name", { required: "name is required" })}
+            placeholder="Enter your name"
+            {...register("name", { required: "Name is required" })}
             className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 focus:outline-none"
           />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-          )}
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
         </div>
-
-        <div>
-          <label
-            htmlFor="mobileNo"
-            className="block text-sm font-medium text-gray-700"
-          >
-            &nbsp;Mobile no
-          </label>
+        
+        <div className="mb-4">
+          <label htmlFor="mobileNo" className="block text-sm font-medium text-gray-600">Mobile No</label>
           <input
-            type="String"
+            type="text"
             id="mobileNo"
-            placeholder="enter mobile number"
+            placeholder="Enter mobile number"
             {...register("mobileNo", {
-              required: "mobile number is required",
+              required: "Mobile number is required",
               pattern: {
-                // regex to validate mobile number
                 value: /^\d{10}$/,
-                message: "mobile number must be of 10 digits",
+                message: "Mobile number must be 10 digits",
               },
             })}
             className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 focus:outline-none"
           />
-          {errors.mobileNo && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.mobileNo.message}
-            </p>
-          )}
+          {errors.mobileNo && <p className="text-red-500 text-sm mt-1">{errors.mobileNo.message}</p>}
         </div>
-
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
-            &nbsp;Password
-          </label>
+        
+        <div className="mb-4">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-600">Password</label>
           <input
             type="password"
             id="password"
@@ -94,21 +88,22 @@ function ProfileEdit() {
               required: "Password is required",
               pattern: {
                 value: /^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-                message:
-                  "Password must be at least 8 characters long and include a number and special character",
+                message: "Must be at least 8 characters, include a number & special character",
               },
             })}
             className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-indigo-300 focus:outline-none"
           />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password.message}
-            </p>
-          )}
+          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
         </div>
-        <input type="submit" />
+        
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition duration-300"
+        >
+          {isSubmitting ? "Updating..." : "Update Profile"}
+        </button>
       </form>
-    </>
+    </div>
   );
 }
 

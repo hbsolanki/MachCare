@@ -35,10 +35,9 @@ router.post("/vehicle/new", async (req, res) => {
 router
   .route("/update")
   .all(verifyToken)
-  .get(async (req,res,next)=>{
+  .get(async (req, res, next) => {
     const dbUser = await User.findById(req.id);
-    if(dbUser){
-      console.log(dbUser);
+    if (dbUser) {
       res.send(dbUser);
       return;
     }
@@ -46,9 +45,16 @@ router
   })
   .post(async (req, res, next) => {
     const userData = req.body;
-    const updatedData = User.findByIdAndUpdate(req.id, userData);
-    console.log(updatedData);
-    res.send(updatedData);
+    try {
+      const updatedData = await User.findByIdAndUpdate(req.id, userData, {
+        new: true,
+        runValidators: true,
+      });
+      if (updatedData) res.status(200).send("data updated successfully");
+      else res.status(500).status("update failed");
+    } catch (e) {
+      console.log(e);
+    }
   });
 
 module.exports = router;

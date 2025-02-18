@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const logout = require("./auth/logout");
 
 // connecting to mongoose server
 main()
@@ -55,13 +56,19 @@ app.post("/login", async (req, res) => {
   const token = await dbVerify(userData);
   if (token) {
     res.cookie("token", token, {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       httpOnly: true, // Prevents access from JavaScript (for security)
+      secure: true,
+      sameSite: "strict"
     });
     res.status(200).send("cookie send successful");
     return;
   }
   res.status(401).send("user authentication failed");
 });
+
+app.get("/logout",logout);
+
 // routes
 app.get("/", (req, res) => {
   res.send("root here");
