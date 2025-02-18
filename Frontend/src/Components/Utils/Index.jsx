@@ -34,6 +34,12 @@ function Index() {
           >
             Add vehicle
           </Link>
+          <Link
+            to="/user/profile/edit"
+            className="bg-yellow-500 text-white py-3 px-8 rounded-lg text-xl sm:text-2xl hover:bg-yellow-400 transition duration-300"
+          >
+            Edit Profile
+          </Link>
         </div>
       </section>
 

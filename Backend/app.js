@@ -7,6 +7,7 @@ const port = 8080;
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 // connecting to mongoose server
 main()
@@ -25,6 +26,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(cookieParser());
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -50,14 +53,14 @@ app.listen(port, () => {
 app.post("/login", async (req, res) => {
   const userData = req.body;
   const token = await dbVerify(userData);
-  if(token){
+  if (token) {
     res.cookie("token", token, {
       httpOnly: true, // Prevents access from JavaScript (for security)
     });
     res.status(200).send("cookie send successful");
     return;
   }
-  res.send("user authentication failed");
+  res.status(401).send("user authentication failed");
 });
 // routes
 app.get("/", (req, res) => {

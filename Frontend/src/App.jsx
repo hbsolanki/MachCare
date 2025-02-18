@@ -14,7 +14,7 @@ import User from "./Components/User/User";
 import UserRegistration from "./Components/User/UserRegistration";
 import UserVehicleRegistration from "./Components/User/UserVehicleRegistration";
 import UserProfile from "./Components/User/Profile";
-import UserProfileEdit from ".//Components/User/ProfileEdit";
+import UserProfileEdit from "./Components/User/ProfileEdit";
 
 //Mechanical
 import Mechanical from "./Components/Mechanical/Mechanical";

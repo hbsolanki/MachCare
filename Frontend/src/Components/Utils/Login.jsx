@@ -1,7 +1,10 @@
 import { useForm } from "react-hook-form";
-import  axios  from "axios";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -10,11 +13,29 @@ const Login = () => {
 
   const login = async (data) => {
     try {
-      const res = await axios.post("http://localhost:8080/login", data,{ 
-        withCredentials: true 
+      const res = await axios.post("http://localhost:8080/login", data, {
+        withCredentials: true,
       });
+
+      if (res.status === 200) {
+        navigate("/");
+      }
+
       console.log(res);
-    } catch (error) {}
+    } catch (error) {
+      if (error.response) {
+        // If the server responds with an error status
+        if (error.response.status === 401) {
+          alert("Authentication Failed");
+        } else {
+          alert(`Error: ${error.response.status} - ${error.response.data}`);
+        }
+      } else {
+        // If the request failed before reaching the server
+        alert("Network error or server unreachable");
+      }
+      // console.error("Login error:", error);
+    }
   };
 
   return (
