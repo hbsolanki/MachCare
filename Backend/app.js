@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const logout = require("./auth/logout");
+// const logout = require("./auth/logout");
 
 // connecting to mongoose server
 main()
@@ -40,7 +40,6 @@ const userRouter = require("./Router/user");
 const dealerRouter = require("./Router/dealer");
 const mechanicRouter = require("./Router/mechanic");
 const AdminRouter = require("./Router/admin");
-const dbVerify = require("./auth/DBverify");
 
 app.use("/API/user", userRouter);
 app.use("/API/mechanic", mechanicRouter);
@@ -67,7 +66,7 @@ app.listen(port, () => {
 //   res.status(401).send("user authentication failed");
 // });
 
-app.get("/logout", logout);
+// app.get("/logout", logout);
 
 // routes
 app.get("/", (req, res) => {
