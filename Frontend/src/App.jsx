@@ -18,8 +18,8 @@ import UserProfileEdit from "./Components/User/ProfileEdit";
 
 //Mechanical
 import Mechanical from "./Components/Mechanical/Mechanical";
-// import Signin from "./Components/Mechanical/Signin";
-import Signup from "./Components/Mechanical/Signup";
+import MechanicalSignin from "./Components/Mechanical/MechanicalSignin";
+import MechanicalSignup from "./Components/Mechanical/MechanicalSignup";
 import MechanicalProfile from "./Components/Mechanical/Profile";
 import MechanicalProfileEdit from "./Components/Mechanical/ProfileEdit";
 import Services from "./Components/Mechanical/Services";
@@ -50,7 +50,8 @@ function App() {
           {/* Mechanical */}
           <Route path="/mechanical" element={<Mechanical />} />
           {/* <Route path="/mechanical/signin" element={<Signin />} /> */}
-          <Route path="/mechanical/signup" element={<Signup />} />
+          <Route path="/mechanical/signup" element={<MechanicalSignup />} />
+          <Route path="/mechanical/signin" element={<MechanicalSignin />} />
           <Route path="/mechanical/profile" element={<MechanicalProfile />} />
           <Route
             path="/mechanical/profile/edit"
