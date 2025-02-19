@@ -5,26 +5,20 @@ const router = express.Router();
 const { User, Vehicle } = require("../models/index");
 
 // Import Dependencies
-const bodyParser = require("body-parser");
-const getHashPassword = require("../helper/getHash");
-const comparePassword = require("../helper/compareHash");
-const verifyToken = require("../auth/verifyToken");
-const sendToken = require("../auth/sendToken");
+const {
+  encryptPassword,
+  decryptPassword,
+  comparePassword,
+  sendToken,
+  verifyToken,
+} = require("../auth/auth");
 
-// Middleware for parsing requests
-router.use(bodyParser.urlencoded({ extended: false }));
-router.use(bodyParser.json());
 
-/**
- * @route   POST /API/user/signup
- * @desc    Register a new user
- * @access  Public
- */
+
 router.post("/signup", async (req, res) => {
   try {
     const userData = req.body;
-    userData.password = await getHashPassword(userData.password);
-
+    userData.password = encryptPassword(userData.password);
     const user = new User(userData);
     const data = await user.save();
     res.status(201).json({ message: "User registered successfully", data });
@@ -34,16 +28,10 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-/**
- * @route   POST /API/user/signin
- * @desc    Authenticate user and return token
- * @access  Public
- */
+
 router.post("/signin", async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log("User attempting to sign in:", email);
-
     // Find user in database
     const dbUser = await User.findOne({ email });
     if (!dbUser) {
@@ -51,44 +39,30 @@ router.post("/signin", async (req, res) => {
     }
 
     // Compare hashed passwords
-    const isMatch = await comparePassword(password, dbUser.password);
+    const isMatch = comparePassword(password, dbUser.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     // Generate JWT token
-    const token = sendToken(dbUser);
-    console.log(token);
-    res.cookie("token", token, {
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      httpOnly: true,
-      // secure: true,
-      // sameSite: "strict",
-    });
-
+    const token = sendToken(dbUser._id, dbUser.email);
     res.status(200).json({ message: "Login successful", token });
+    return;
+
   } catch (error) {
     console.error("Error in sign-in:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-/**
- * @route   POST /API/user/vehicle/new
- * @desc    Add new vehicle for a user
- * @access  Private (Protected route)
- */
+
 router.post("/vehicle/new", async (req, res) => {
   console.log("Inside backend vehicle addition");
   console.log(req.body);
   res.send("Vehicle addition endpoint hit!");
 });
 
-/**
- * @route   GET/POST /API/user/update
- * @desc    Get and update user profile
- * @access  Private (Requires Authentication)
- */
+
 router
   .route("/update")
   .all(verifyToken) // Middleware to verify token
