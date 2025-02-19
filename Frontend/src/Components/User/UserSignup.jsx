@@ -153,7 +153,7 @@ function UserSignup() {
             disabled={isSubmitting}
             className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300"
           >
-            {isSubmitting ? "Submitting..." : "Register"}
+            {isSubmitting ? "Submitting..." : "Signup"}
           </button>
         </form>
         <div className="text-center text-sm text-gray-600 mt-4">

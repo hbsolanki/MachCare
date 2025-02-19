@@ -60,9 +60,13 @@ function MechanicalSignup() {
 
     try {
       const backendUrl = getGlobalVariable("Backend"); // Ensure backend URL is correctly retrieved
-      const res = await axios.post(`${backendUrl}/API/user/signup`, formData, {
-        withCredentials: true, // Ensure cookies are handled
-      });
+      const res = await axios.post(
+        `${backendUrl}/API/mechanic/signup`,
+        formData,
+        {
+          withCredentials: true, // Ensure cookies are handled
+        }
+      );
 
       if (res.data.token) {
         Cookies.set("token", res.data.token, {
