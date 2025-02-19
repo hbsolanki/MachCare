@@ -42,16 +42,16 @@ const mechanicRouter = require("./Router/mechanic");
 const AdminRouter = require("./Router/admin");
 const dbVerify = require("./auth/DBverify");
 
-app.use("/user", userRouter);
-app.use("/mechanic", mechanicRouter);
-app.use("/dealer", dealerRouter);
-app.use("/admin", AdminRouter);
+app.use("/API/user", userRouter);
+app.use("/API/mechanic", mechanicRouter);
+app.use("/API/dealer", dealerRouter);
+app.use("/API/admin", AdminRouter);
 
 app.listen(port, () => {
   console.log(`Server Listen on Port ${port}`);
 });
 
-app.post("/login", async (req, res) => {
+app.post("/API/login", async (req, res) => {
   const userData = req.body;
   const token = await dbVerify(userData);
   if (token) {

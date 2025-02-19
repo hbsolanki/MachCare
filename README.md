@@ -2,6 +2,8 @@
 
 Tech : Node,React,Mongo,Tailwind
 
+Color : black,white,blue,gray
+
 \*Auth
 -> JWT (email)
 

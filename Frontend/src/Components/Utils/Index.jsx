@@ -1,93 +1,116 @@
 import { Link } from "react-router-dom";
 import Footer from "./Footer";
-import PlanCard from "./PlanCard"; // Import the PlanCard component
-import FeatureCard from "./FeatureCard"; // Import the FeatureCard component
+import PlanCard from "./PlanCard";
+import FeatureCard from "./FeatureCard";
 
 function Index() {
   return (
-    <div className="font-sans">
-      {/* Hero Section with Gradient Background */}
-      <section className="bg-gradient-to-r from-orange-600 to-yellow-500 text-white text-center py-20">
-        <h1 className="text-4xl sm:text-5xl font-bold mb-6">
-          Welcome to MachCare
-        </h1>
-        <p className="text-lg sm:text-xl mb-10">
-          Your trusted partner for vehicle servicing, maintenance, and repairs.
-          Quality services, exceptional care.
-        </p>
-        <div className="flex justify-center gap-6">
-          <Link
-            to="/user/registration"
-            className="bg-orange-600 text-white py-3 px-8 rounded-lg text-xl sm:text-2xl hover:bg-orange-500 transition duration-300"
-          >
-            Registration User
-          </Link>
-          <Link
-            to="/login"
-            className="bg-yellow-500 text-white py-3 px-8 rounded-lg text-xl sm:text-2xl hover:bg-yellow-400 transition duration-300"
-          >
-            Login User
-          </Link>
-          <Link
-            to="/user/vehicle/registration"
-            className="bg-yellow-500 text-white py-3 px-8 rounded-lg text-xl sm:text-2xl hover:bg-yellow-400 transition duration-300"
-          >
-            Add vehicle
-          </Link>
-          <Link
-            to="/user/profile/edit"
-            className="bg-yellow-500 text-white py-3 px-8 rounded-lg text-xl sm:text-2xl hover:bg-yellow-400 transition duration-300"
-          >
-            Edit Profile
-          </Link>
+    <div className="font-sans bg-white text-black">
+      {/* Hero Section */}
+      <section
+        className="relative min-h-screen flex flex-col justify-center items-center text-center px-6"
+        style={{
+          backgroundImage:
+            "url('https://media.istockphoto.com/id/1051029946/photo/people-holding-hand-are-repairing-a-motorcycle.jpg?s=612x612&w=0&k=20&c=ZAdC5r-MzTHu6GfnOd-UxBZfYqTGMAlDMbQND6ktWVY=')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="relative z-10 text-white text-center max-w-3xl mx-auto">
+          <h1 className="text-5xl font-bold mb-6 transition-transform duration-300 hover:scale-105 ">
+            Welcome to MachCare
+          </h1>
+          <p className="text-lg sm:text-xl mb-6">
+            Your trusted partner for vehicle servicing, maintenance, and
+            repairs. We provide seamless solutions to keep your vehicle in top
+            condition with professional service, certified mechanics, and
+            affordable plans.
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-6 mt-6">
+            <Link
+              to="/user/signup"
+              className="bg-blue-600 text-white py-3 px-8 rounded-lg text-lg hover:bg-blue-700 transition duration-300 shadow-lg"
+            >
+              Sign up
+            </Link>
+            <Link
+              to="/signin"
+              className="bg-gray-700 text-white py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition duration-300 shadow-lg"
+            >
+              Sign in
+            </Link>
+            {/* <Link
+              to="/user/vehicle/registration"
+              className="bg-blue-600 text-white py-3 px-8 rounded-lg text-lg hover:bg-blue-700 transition duration-300 shadow-lg"
+            >
+              Add Vehicle
+            </Link> */}
+          </div>
         </div>
       </section>
 
-      {/* User Section */}
-      <section className="bg-gray-50 py-20 px-6 sm:px-12">
-        <h2 className="text-3xl sm:text-4xl font-semibold text-orange-600 text-center mb-8">
-          For Users
+      {/* About Us Section */}
+      <section className="py-20 px-6 sm:px-12">
+        <h2 className="text-4xl font-semibold text-blue-900 text-center mb-8">
+          About MachCare
         </h2>
+        <p className="text-lg text-center text-gray-700 max-w-3xl mx-auto">
+          MachCare is a one-stop solution for all your vehicle needs. We connect
+          users with certified mechanics to ensure smooth and hassle-free
+          vehicle servicing. Whether it's routine maintenance or emergency
+          repairs, MachCare has got you covered.
+        </p>
+      </section>
+
+      {/* User Section */}
+      <section className="py-20 px-6 sm:px-12 bg-gray-100">
+        <h2 className="text-4xl font-semibold text-blue-900 text-center mb-12">
+          Our Plans for Users
+        </h2>
+        <p className="text-lg text-gray-700 text-center mb-10 max-w-3xl mx-auto">
+          Choose from our flexible service plans tailored to meet your vehicle
+          maintenance needs.
+        </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Use PlanCard for each plan */}
           <PlanCard
             title="Basic Plan"
-            description="Routine maintenance, oil changes, tire rotations, and fluid checks."
+            description="Routine maintenance, oil changes, tire rotations."
             price="$99.99/month"
           />
           <PlanCard
             title="Premium Plan"
-            description="Comprehensive service with engine diagnostics and repair discounts."
+            description="Engine diagnostics and repair discounts."
             price="$199.99/month"
           />
           <PlanCard
             title="Ultimate Plan"
-            description="All-inclusive services including on-demand repairs and roadside assistance."
+            description="On-demand repairs & roadside assistance."
             price="$299.99/month"
           />
         </div>
       </section>
 
       {/* Mechanic Section */}
-      <section className="bg-gradient-to-r from-gray-800 to-black text-white py-20 px-6 sm:px-12">
-        <h2 className="text-3xl sm:text-4xl font-semibold text-orange-500 text-center mb-8">
-          For Mechanics
+      <section className="py-20 px-6 sm:px-12 bg-gray-200">
+        <h2 className="text-4xl font-semibold text-blue-900 text-center mb-8">
+          Join MachCare as a Mechanic
         </h2>
-        <p className="text-lg sm:text-xl text-center mb-6">
-          Join MachCare and start earning! As a certified mechanic, you can work
-          with a trusted platform, get paid per service, and maintain a flexible
-          schedule.
+        <p className="text-lg text-center text-gray-700 max-w-3xl mx-auto mb-8">
+          Join our trusted platform, get paid per service, and work with
+          flexible schedules. Become part of a growing network of professional
+          mechanics today!
         </p>
         <div className="flex justify-center gap-6">
           <Link
             to="/mechanic-registration"
-            className="bg-orange-500 text-white py-3 px-8 rounded-lg text-lg sm:text-xl hover:bg-orange-400 transition duration-300"
+            className="bg-blue-600 text-white py-3 px-8 rounded-lg text-lg hover:bg-blue-700 transition duration-300"
           >
             Register as Mechanic
           </Link>
           <Link
             to="/mechanic-login"
-            className="bg-gray-900 text-white py-3 px-8 rounded-lg text-lg sm:text-xl hover:bg-gray-700 transition duration-300"
+            className="bg-gray-700 text-white py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition duration-300"
           >
             Login as Mechanic
           </Link>
@@ -95,43 +118,62 @@ function Index() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="bg-gray-100 py-20 px-6 sm:px-12">
-        <h2 className="text-3xl sm:text-4xl font-semibold text-orange-600 text-center mb-8">
+      <section className="py-20 px-6 sm:px-12">
+        <h2 className="text-4xl font-semibold text-blue-900 text-center mb-12">
           Why Choose MachCare?
         </h2>
+        <p className="text-lg text-center text-gray-700 mb-10 max-w-3xl mx-auto">
+          We ensure quality, affordability, and ease of access for all vehicle
+          owners. Here’s why you should trust us:
+        </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Use FeatureCard for each feature */}
           <FeatureCard
             title="Convenience"
-            description="Get services delivered right to your doorstep. No need to visit a garage."
+            description="Get services delivered right to your doorstep."
           />
           <FeatureCard
             title="Affordable Plans"
-            description="Our plans are designed to suit all budgets and offer great value for money."
+            description="Our plans are designed for every budget."
           />
           <FeatureCard
             title="Certified Mechanics"
-            description="All our mechanics are certified professionals you can trust for reliable vehicle service."
+            description="Trusted professionals for reliable service."
           />
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="py-20 px-6 sm:px-12 bg-gray-100">
+        <h2 className="text-4xl font-semibold text-blue-900 text-center mb-12">
+          What Our Customers Say
+        </h2>
+        <div className="max-w-4xl mx-auto text-center">
+          <blockquote className="text-lg text-gray-700 italic">
+            "MachCare has transformed the way I maintain my car. Their certified
+            mechanics are professional, and their pricing is very reasonable!"
+          </blockquote>
+          <p className="text-gray-900 font-semibold mt-4">— Rajesh Patel</p>
+        </div>
+      </section>
+
       {/* Contact Section */}
-      <section className="py-16 bg-black text-white text-center">
-        <h2 className="text-3xl font-semibold mb-6">Need Assistance?</h2>
-        <p className="text-lg mb-8">
-          We're here to help! Get in touch with our support team for any
-          questions or concerns.
+      <section className="py-16 bg-gray-200 text-center">
+        <h2 className="text-4xl font-semibold mb-6 text-blue-900">
+          Need Assistance?
+        </h2>
+        <p className="text-lg text-gray-700 mb-8">
+          We're here to help! Contact our support team for any queries or
+          issues.
         </p>
         <a
           href="mailto:support@machcare.com"
-          className="bg-orange-500 text-white py-3 px-6 rounded-lg text-lg sm:text-xl hover:bg-orange-400 transition duration-300"
+          className="bg-blue-600 text-white py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition duration-300"
         >
           Contact Support
         </a>
       </section>
 
-      {/* Footer Section */}
+      {/* Footer */}
       <Footer />
     </div>
   );
