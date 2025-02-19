@@ -34,7 +34,7 @@ function User() {
   const handleDeleteVehicle = async () => {
     if (!selectedVehicle) return;
     try {
-      await axios.delete(`${Backend}/API/vehicles/${selectedVehicle._id}`, {
+      await axios.delete(`${Backend}/API/user/vehicle/delete/${selectedVehicle._id}`, {
         headers: { token: token },
       });
       setUserData((prev) => ({

@@ -12,7 +12,7 @@ const {
   sendToken,
   verifyToken,
 } = require("../auth/auth");
-const { db } = require("../models/mechanic");
+const { db, findById } = require("../models/mechanic");
 
 router.post("/signup", async (req, res) => {
   try {
@@ -114,6 +114,57 @@ router
       res.status(500).json({ message: "Internal server error" });
     }
   });
+
+router
+  .route("/vehicle/update/:vid")
+  .all(verifyToken)
+  .put(async (req, res) => {
+    try {
+      const { vid } = req.params;
+      const data = req.body;
+
+      const vehicle = await Vehicle.findByIdAndUpdate(vid, data, {
+        new: true,
+        runValidators: true,
+      });
+
+      if (!vehicle) {
+        return res.status(404).json({ message: "Vehicle not found" });
+      }
+
+      res
+        .status(200)
+        .json({ message: "Vehicle updated successfully", vehicle });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error updating vehicle", error: error.message });
+    }
+  });
+
+  router.route("/vehicle/delete/:vid")
+  .all(verifyToken)
+  .delete(async (req, res) => {
+    try {
+      const vid = req.params.vid;
+      
+      // Ensure `vid` is a valid MongoDB ObjectId
+      if (!vid.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(400).json({ message: "Invalid vehicle ID format" });
+      }
+
+      const vehicle = await Vehicle.findByIdAndDelete(vid);
+
+      if (!vehicle) {
+        return res.status(404).json({ message: "Vehicle not found" });
+      }
+
+      res.status(200).json({ message: "Vehicle deleted successfully", vehicle });
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  });
+
 
 router
   .route("/vehicle/new")
