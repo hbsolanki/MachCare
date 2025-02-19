@@ -45,8 +45,11 @@ const UserSignin = () => {
 
     try {
       const res = await axios.post(`${Backend}/API/user/signin`, formData);
-      console.log(res);
-      navigate("/user");
+      if(res.status == 200){
+        console.log(res.data);
+        localStorage.setItem("token",res.data.token);
+        navigate("/user");
+      }
     } catch (error) {
       console.error(error);
       alert("Login failed. Please try again.");

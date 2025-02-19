@@ -46,6 +46,7 @@ router.post("/signin", async (req, res) => {
 
     // Generate JWT token
     const token = sendToken(dbUser._id, dbUser.email);
+    localStorage.setItem('token', token);
     res.status(200).json({ message: "Login successful", token });
     return;
 
