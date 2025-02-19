@@ -12,6 +12,7 @@ const {
   sendToken,
   verifyToken,
 } = require("../auth/auth");
+const { db } = require("../models/mechanic");
 
 
 
@@ -43,32 +44,25 @@ router.post("/signin", async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-
+    
     // Generate JWT token
     const token = sendToken(dbUser._id, dbUser.email);
     res.status(200).json({ message: "Login successful", token });
     return;
-
+    
   } catch (error) {
     console.error("Error in sign-in:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-
-router.post("/vehicle/new", async (req, res) => {
-  console.log("Inside backend vehicle addition");
-  console.log(req.body);
-  res.send("Vehicle addition endpoint hit!");
-});
-
-
 router
-  .route("/update")
-  .all(verifyToken) // Middleware to verify token
+  .route("/")
+  // .all(verifyToken) // Middleware to verify token
   .get(async (req, res) => {
     try {
       const dbUser = await User.findById(req.id);
+      dbUser.password = decryptPassword(dbUser.password);
       if (dbUser) {
         console.log("User data:", dbUser);
         return res.json(dbUser);
@@ -79,6 +73,10 @@ router
       res.status(500).json({ message: "Internal server error" });
     }
   })
+ 
+  router
+  .route("/update")
+  .all(verifyToken) // Middleware to verify token
   .post(async (req, res) => {
     try {
       const updatedData = await User.findByIdAndUpdate(req.id, req.body, {
@@ -97,3 +95,9 @@ router
   });
 
 module.exports = router;
+
+router.post("/vehicle/new", async (req, res) => {
+  console.log("Inside backend vehicle addition");
+  console.log(req.body);
+  res.send("Vehicle addition endpoint hit!");
+});

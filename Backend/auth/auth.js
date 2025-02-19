@@ -26,10 +26,15 @@ function sendToken(id, email) {
   return token;
 }
 
-function verifyToken(token) {
+function verifyToken(req,res,next) {
+
+  let token = req.headers.token;
+  if (!token) return res.status(401).json({ message: "No token provided" });
+
   try {
     const decoded = jwt.verify(token, secretKey);
-    console.log(decoded);
+    req.id = decoded.id;
+    req.email = decoded.email;
     console.log("user is verified successfully");
     next();
   } catch (e) {

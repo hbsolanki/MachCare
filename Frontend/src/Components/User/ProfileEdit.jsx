@@ -17,9 +17,10 @@ function ProfileEdit() {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem("token");
       try {
-        const res = await axios.get(`${Backend}/API/user/update`, {
-          withCredentials: true,
+        const res = await axios.get(`${Backend}/API/user`, {
+          headers: { token: token },
         });
         setFormData(res.data);
       } catch (error) {
