@@ -15,6 +15,7 @@ import UserSignin from "./Components/User/UserSignin";
 import UserVehicleRegistration from "./Components/User/UserVehicleRegistration";
 import UserProfile from "./Components/User/Profile";
 import UserProfileEdit from "./Components/User/ProfileEdit";
+import VehicleEdit from "./Components/User/VehicleEdit";
 
 //Mechanical
 import Mechanical from "./Components/Mechanical/Mechanical";
@@ -41,11 +42,12 @@ function App() {
           <Route path="/user/signin" element={<UserSignin />} />
 
           <Route
-            path="/user/vehicle/registration"
+            path="/user/vehicle/new"
             element={<UserVehicleRegistration />}
           />
           <Route path="/user/profile" element={<UserProfile />} />
           <Route path="/user/profile/edit" element={<UserProfileEdit />} />
+          <Route path="/user/vehicle/edit/:vid" element={<VehicleEdit />} />
 
           {/* Mechanical */}
           <Route path="/mechanical" element={<Mechanical />} />

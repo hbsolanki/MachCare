@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
 import UserHeader from "./UserHeader";
+import GeneralModal from "../Utils/GeneralModel"; // Import modal
 
 const Backend = getGlobalVariable();
 
 function User() {
+  let { token } = localStorage;
+  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
-
-  const hardcodedUser = {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "+91 9876543210",
-    purchasedPlans: [
-      { id: 1, name: "Basic Service", price: "₹999", status: "Active" },
-      { id: 2, name: "Premium Maintenance", price: "₹2999", status: "Expired" },
-    ],
-    vehicles: [{ id: 1, model: "Honda City", number: "GJ 05 AB 1234" }],
-  };
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(`${Backend}/API/user`, {
-          withCredentials: true,
+          headers: { token: token },
         });
         setUserData(response.data);
         console.log(response.data);
@@ -36,75 +30,133 @@ function User() {
     fetchUserData();
   }, []);
 
-  // Merge hardcoded and fetched data, giving priority to fetched data
-  const finalUserData = hardcodedUser;
+  // Handle delete vehicle
+  const handleDeleteVehicle = async () => {
+    if (!selectedVehicle) return;
+    try {
+      await axios.delete(`${Backend}/API/vehicles/${selectedVehicle._id}`, {
+        headers: { token: token },
+      });
+      setUserData((prev) => ({
+        ...prev,
+        registered_vehicles: prev.registered_vehicles.filter(
+          (v) => v._id !== selectedVehicle._id
+        ),
+      }));
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error deleting vehicle:", error);
+    }
+  };
 
   return (
     <>
       {userData ? (
         <>
           <UserHeader />
-          <div className="min-h-screen bg-white text-gray-900 flex flex-col  items-center p-6">
-            <div className=" w-full bg-gray-100 shadow-lg  rounded-xl p-8 space-y-6">
+          <div className="min-h-screen bg-white text-gray-900 flex flex-col items-center p-6">
+            <div className="w-full bg-gray-100 shadow-lg rounded-xl p-8 space-y-6">
               {/* User Info Card */}
               <div className="bg-white p-6 rounded-xl shadow border border-gray-200">
                 <h3 className="text-xl font-semibold mb-3 text-gray-800">
                   User Information
                 </h3>
                 <p>
-                  <strong>Name:</strong> {finalUserData.name}
+                  <strong>Name:</strong> {userData.name}
                 </p>
                 <p>
-                  <strong>Email:</strong> {finalUserData.email}
+                  <strong>Email:</strong> {userData.email}
                 </p>
                 <p>
-                  <strong>Phone:</strong> {finalUserData.phone}
+                  <strong>Phone:</strong> {userData.mobileNo}
                 </p>
-              </div>
-
-              {/* Purchased Plans */}
-              <div className="bg-white p-6 rounded-xl shadow border border-gray-200">
-                <h3 className="text-xl font-semibold mb-3 text-gray-800">
-                  Purchased Plans
-                </h3>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {finalUserData.purchasedPlans.map((plan) => (
-                    <div
-                      key={plan.id}
-                      className="bg-gray-50 p-4 rounded-lg shadow border border-gray-300"
-                    >
-                      <p className="font-bold">{plan.name}</p>
-                      <p>{plan.price}</p>
-                      <p
-                        className={
-                          plan.status === "Active"
-                            ? "text-green-600"
-                            : "text-red-500"
-                        }
-                      >
-                        {plan.status}
-                      </p>
-                    </div>
-                  ))}
-                </div>
               </div>
 
               {/* Vehicles Section */}
-              <div className="bg-white p-6 rounded-xl shadow border border-gray-200">
+              <div className="bg-white p-6 rounded-xl shadow border border-gray-200 w-full">
                 <h3 className="text-xl font-semibold mb-3 text-gray-800">
                   Your Vehicles
                 </h3>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {finalUserData.vehicles.map((vehicle) => (
-                    <div
-                      key={vehicle.id}
-                      className="bg-gray-50 p-4 rounded-lg shadow border border-gray-300"
-                    >
-                      <p className="font-bold">{vehicle.model}</p>
-                      <p>{vehicle.number}</p>
-                    </div>
-                  ))}
-                </div>
+
+                {userData?.registered_vehicles?.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border border-gray-300 px-4 py-2">
+                            Sr.
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2">
+                            Model
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2">
+                            Type
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2">
+                            Fuel Type
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2">
+                            Vehicle No.
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2">
+                            Year
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {userData.registered_vehicles.map((vehicle, index) => (
+                          <tr
+                            key={vehicle._id}
+                            className="text-center hover:bg-gray-50"
+                          >
+                            <td className="border border-gray-300 px-4 py-2">
+                              {index + 1}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2 font-semibold">
+                              {vehicle.model}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                              {vehicle.type}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                              {vehicle.fuelType.toUpperCase()}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                              {vehicle.vehicleNo}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                              {vehicle.manufacturingYear || "N/A"}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                              <button
+                                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md mr-2"
+                                onClick={() =>
+                                  navigate(`/user/vehicle/edit/${vehicle._id}`)
+                                }
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
+                                onClick={() => {
+                                  setSelectedVehicle(vehicle);
+                                  setIsModalOpen(true);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No vehicles registered yet.</p>
+                )}
               </div>
 
               {/* Buttons in One Row */}
@@ -130,6 +182,17 @@ function User() {
               </div>
             </div>
           </div>
+
+          {/* General Modal for Deleting Vehicle */}
+          <GeneralModal
+            open={isModalOpen}
+            setOpen={setIsModalOpen}
+            title="Delete Vehicle"
+            message={`Are you sure you want to delete ${selectedVehicle?.model}?`}
+            onConfirm={handleDeleteVehicle}
+            confirmText="Delete"
+            cancelText="Cancel"
+          />
         </>
       ) : (
         <></>

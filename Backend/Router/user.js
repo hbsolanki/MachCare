@@ -14,21 +14,19 @@ const {
 } = require("../auth/auth");
 const { db } = require("../models/mechanic");
 
-
-
 router.post("/signup", async (req, res) => {
   try {
     const userData = req.body;
     userData.password = encryptPassword(userData.password);
     const user = new User(userData);
     const data = await user.save();
-    res.status(201).json({ message: "User registered successfully", data });
+    const token = sendToken(data._id, data.email);
+    res.send({ message: "Login successful", token });
   } catch (error) {
     console.error("Signup error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 router.post("/signin", async (req, res) => {
   try {
@@ -44,12 +42,11 @@ router.post("/signin", async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    
+
     // Generate JWT token
     const token = sendToken(dbUser._id, dbUser.email);
     res.status(200).json({ message: "Login successful", token });
     return;
-    
   } catch (error) {
     console.error("Error in sign-in:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -58,23 +55,30 @@ router.post("/signin", async (req, res) => {
 
 router
   .route("/")
-  // .all(verifyToken) // Middleware to verify token
+  .all(verifyToken)
   .get(async (req, res) => {
     try {
-      const dbUser = await User.findById(req.id);
-      dbUser.password = decryptPassword(dbUser.password);
-      if (dbUser) {
-        console.log("User data:", dbUser);
-        return res.json(dbUser);
+      const dbUser = await User.findById(req.id).populate(
+        "registered_vehicles"
+      );
+
+      if (!dbUser) {
+        return res.status(404).json({ message: "User not found" });
       }
-      res.status(404).json({ message: "User not found" });
+
+      // Decrypt user password (if needed)
+      dbUser.password = decryptPassword(dbUser.password);
+
+      console.log("User data:", dbUser);
+
+      return res.json(dbUser);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Internal server error" });
     }
-  })
- 
-  router
+  });
+
+router
   .route("/update")
   .all(verifyToken) // Middleware to verify token
   .post(async (req, res) => {
@@ -94,10 +98,47 @@ router
     }
   });
 
-module.exports = router;
+router
+  .route("/vehicle/data/:vid")
+  .all(verifyToken)
+  .get(async (req, res) => {
+    try {
+      const { vid } = req.params;
+      const vehicle = await Vehicle.findById(vid);
+      if (!vehicle) {
+        return res.status(404).json({ message: "Vehicle not found" });
+      }
+      res.json(vehicle);
+    } catch (error) {
+      console.error("Error fetching vehicle:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 
-router.post("/vehicle/new", async (req, res) => {
-  console.log("Inside backend vehicle addition");
-  console.log(req.body);
-  res.send("Vehicle addition endpoint hit!");
-});
+router
+  .route("/vehicle/new")
+  .all(verifyToken)
+  .post(async (req, res) => {
+    try {
+      console.log(req.body);
+
+      // Create new vehicle
+      let vehicle = new Vehicle(req.body);
+      await vehicle.save(); // Save vehicle to DB
+
+      // Find user and update their registered_vehicles array
+      let user = await User.findById(req.id);
+
+      user.registered_vehicles.push(vehicle._id);
+      await user.save(); // Save updated user document
+
+      res
+        .status(201)
+        .json({ message: "Vehicle registered successfully", vehicle });
+    } catch (error) {
+      console.error("Error registering vehicle:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+module.exports = router;

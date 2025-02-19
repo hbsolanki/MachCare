@@ -61,19 +61,10 @@ function UserSignup() {
     setIsSubmitting(true);
 
     try {
-      const res = await axios.post(`${Backend}/API/user/signup`, formData, {
-        withCredentials: true, // Ensure cookies are handled
-      });
+      const res = await axios.post(`${Backend}/API/user/signup`, formData);
 
-      if (res.data.token) {
-        Cookies.set("token", res.data.token, {
-          expires: 1, // Token expires in 1 day
-          secure: true,
-          sameSite: "Strict",
-        });
-
-        navigate("/user"); // Redirect after successful registration
-      }
+      localStorage.setItem("token", res.data.token);
+      navigate("/user");
     } catch (error) {
       console.error("Signup Error:", error);
       alert("Registration failed. Please try again.");

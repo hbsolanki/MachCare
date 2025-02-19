@@ -1,38 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
 
 const Backend = getGlobalVariable();
 
-function UserVehicleRegistration() {
+function VehicleEdit() {
+  const { vid } = useParams();
   const navigate = useNavigate();
   const [vehicleType, setVehicleType] = useState("");
+
   const {
     register,
     handleSubmit,
+    setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const addNewVehicle = async (data) => {
-    try {
-      const formattedVehicleNo = `${data.stateCode} ${data.rtoCode} ${data.alphabets} ${data.digits}`;
-      const updatedData = { ...data, vehicleNo: formattedVehicleNo };
-      delete updatedData.stateCode;
-      delete updatedData.rtoCode;
-      delete updatedData.alphabets;
-      delete updatedData.digits;
+  useEffect(() => {
+    async function fetchVehicle() {
+      try {
+        const response = await axios.get(
+          `${Backend}/API/user/vehicle/data/${vid}`,
+          {
+            headers: { token: localStorage.token },
+          }
+        );
 
-      await axios.post(`${Backend}/API/user/vehicle/new`, updatedData, {
-        headers: {
-          token: localStorage.token,
-        },
+        const vehicle = response.data;
+        reset(vehicle);
+        setVehicleType(vehicle.type || ""); // ✅ Ensure vehicleType updates after reset
+
+        console.log("Fetched vehicle:", vehicle); // Debugging log
+      } catch (error) {
+        console.error("Failed to fetch vehicle details", error);
+        alert("Error fetching vehicle details");
+      }
+    }
+    fetchVehicle();
+  }, [vid, reset]);
+
+  const updateVehicle = async (data) => {
+    try {
+      await axios.put(`${Backend}/API/user/vehicle/update/${vid}`, data, {
+        headers: { token: localStorage.token },
       });
       navigate("/user");
     } catch (error) {
-      console.log(error);
-      alert("Vehicle registration failed. Please try again.");
+      console.error(error);
+      alert("Vehicle update failed. Please try again.");
     }
   };
 
@@ -45,9 +63,10 @@ function UserVehicleRegistration() {
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 sm:p-8">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Vehicle Registration
+          Edit Vehicle Details
         </h2>
-        <form onSubmit={handleSubmit(addNewVehicle)} className="space-y-5">
+        <form onSubmit={handleSubmit(updateVehicle)} className="space-y-5">
+          {/* Vehicle Type */}
           <div>
             <label className="block text-gray-700 font-medium">
               Type of Vehicle
@@ -56,7 +75,11 @@ function UserVehicleRegistration() {
               {...register("type", {
                 required: "Please select type of vehicle",
               })}
-              onChange={(e) => setVehicleType(e.target.value)}
+              value={vehicleType}
+              onChange={(e) => {
+                setVehicleType(e.target.value);
+                setValue("fuelType", ""); // ✅ Reset fuelType when vehicleType changes
+              }}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
             >
               <option value="">Select Vehicle Type</option>
@@ -68,6 +91,7 @@ function UserVehicleRegistration() {
             )}
           </div>
 
+          {/* Fuel Type */}
           <div>
             <label className="block text-gray-700 font-medium">
               Type of Fuel
@@ -77,7 +101,7 @@ function UserVehicleRegistration() {
                 required: "Please select type of fuel",
               })}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-              disabled={!vehicleType}
+              disabled={!vehicleType || !fuelOptions[vehicleType]}
             >
               <option value="">Select Fuel Type</option>
               {fuelOptions[vehicleType]?.map((fuel) => (
@@ -91,6 +115,7 @@ function UserVehicleRegistration() {
             )}
           </div>
 
+          {/* Vehicle Model */}
           <div>
             <label className="block text-gray-700 font-medium">
               Vehicle Model
@@ -108,71 +133,6 @@ function UserVehicleRegistration() {
             )}
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium">
-              Vehicle Number
-            </label>
-            <div className="flex space-x-2">
-              <input
-                type="text"
-                {...register("stateCode", {
-                  required: "Enter state code",
-                  pattern: {
-                    value: /^[A-Z]{2}$/,
-                    message: "2 uppercase letters",
-                  },
-                })}
-                className="w-1/4 p-3 border rounded-lg text-center"
-                placeholder="GJ"
-                maxLength={2}
-              />
-              <input
-                type="text"
-                {...register("rtoCode", {
-                  required: "Enter RTO code",
-                  pattern: { value: /^\d{2}$/, message: "2 digits required" },
-                })}
-                className="w-1/4 p-3 border rounded-lg text-center"
-                placeholder="01"
-                maxLength={2}
-              />
-              <input
-                type="text"
-                {...register("alphabets", {
-                  required: "Enter alphabets",
-                  pattern: {
-                    value: /^[A-Z]{1,2}$/,
-                    message: "1-2 uppercase letters",
-                  },
-                })}
-                className="w-1/4 p-3 border rounded-lg text-center"
-                placeholder="HM"
-                maxLength={2}
-              />
-              <input
-                type="text"
-                {...register("digits", {
-                  required: "Enter last 4 digits",
-                  pattern: { value: /^\d{4}$/, message: "4 digits required" },
-                })}
-                className="w-1/4 p-3 border rounded-lg text-center"
-                placeholder="3030"
-                maxLength={4}
-              />
-            </div>
-            {errors.stateCode && (
-              <p className="text-red-500 text-sm">{errors.stateCode.message}</p>
-            )}
-            {errors.rtoCode && (
-              <p className="text-red-500 text-sm">{errors.rtoCode.message}</p>
-            )}
-            {errors.alphabets && (
-              <p className="text-red-500 text-sm">{errors.alphabets.message}</p>
-            )}
-            {errors.digits && (
-              <p className="text-red-500 text-sm">{errors.digits.message}</p>
-            )}
-          </div>
           {/* Manufacturing Year */}
           <div>
             <label className="block text-gray-700 font-medium">
@@ -193,12 +153,13 @@ function UserVehicleRegistration() {
             )}
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Submitting..." : "Register Vehicle"}
+            {isSubmitting ? "Updating..." : "Update Vehicle"}
           </button>
         </form>
       </div>
@@ -206,4 +167,4 @@ function UserVehicleRegistration() {
   );
 }
 
-export default UserVehicleRegistration;
+export default VehicleEdit;

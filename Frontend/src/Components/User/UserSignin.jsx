@@ -45,12 +45,12 @@ const UserSignin = () => {
 
     try {
       const res = await axios.post(`${Backend}/API/user/signin`, formData);
-      if(res.status == 200){
-        localStorage.setItem("token",res.data.token);
+      if (res.status == 200) {
+        localStorage.setItem("token", res.data.token);
         navigate("/user");
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       alert("Login failed. Please try again.");
     }
   };
@@ -59,7 +59,7 @@ const UserSignin = () => {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-6 sm:p-8">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Login
+          Signin
         </h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email Field */}
@@ -99,7 +99,7 @@ const UserSignin = () => {
             type="submit"
             className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300"
           >
-            Login
+            Signin
           </button>
 
           {/* Forgot Password & Signup Links */}
@@ -108,7 +108,7 @@ const UserSignin = () => {
               Forgot Password?
             </a>
             <span className="mx-2">|</span>
-            <a href="/signup" className="hover:text-blue-500">
+            <a href="/user/signup" className="hover:text-blue-500">
               Create an Account
             </a>
           </div>

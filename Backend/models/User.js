@@ -28,11 +28,7 @@ const UserSchema = new mongoose.Schema({
     },
   ],
   registered_vehicles: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "vehicle",
-      default: [],
-    },
+    { type: mongoose.Schema.Types.ObjectId, ref: "Vehicle" },
   ],
 });
 

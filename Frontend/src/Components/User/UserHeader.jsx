@@ -1,4 +1,5 @@
 import GeneralModal from "../Utils/GeneralModel";
+import LOGO from "../../assets/LOGO.jpeg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -86,11 +87,7 @@ export default function UserHeader() {
         <div className="flex lg:flex-1">
           <a href="#" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
-            <img
-              alt="Logo"
-              src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-              className="h-8 w-auto"
-            />
+            <img alt="Logo" src={LOGO} className="h-10 w-auto" />
           </a>
         </div>
         <div className="flex lg:hidden">
