@@ -12,11 +12,9 @@ async function dbVerify(userData) {
 
   // verifying user with db and send token
   try {
-
     const dbUser = await model.findOne({ email: userData.email });
 
     if (dbUser) {
-
       if (await comparePassword(userData.password, dbUser.password)) {
         const token = sendToken(dbUser);
         return token;
@@ -24,7 +22,6 @@ async function dbVerify(userData) {
         console.log("user is not valid");
         return null;
       }
-
     } else {
       console.log("user not found");
     }

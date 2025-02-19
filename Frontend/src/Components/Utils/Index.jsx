@@ -35,7 +35,7 @@ function Index() {
               Sign up
             </Link>
             <Link
-              to="/signin"
+              to="/user/signin"
               className="bg-gray-700 text-white py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition duration-300 shadow-lg"
             >
               Sign in

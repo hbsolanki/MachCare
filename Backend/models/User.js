@@ -10,33 +10,33 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  password:{
+  password: {
     type: String,
     required: true,
   },
   mobileNo: {
     type: String,
     required: true,
-    minlength: 10, 
+    minlength: 10,
     maxlength: 10,
   },
-  plan:[
+  plan: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "plan",
-      default : []
-    }
+      default: [],
+    },
   ],
-  registered_vehicles:[
+  registered_vehicles: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "vehicle",
-      default : []
-    }
-  ]
+      default: [],
+    },
+  ],
 });
 
-
-const User = mongoose.model("User", UserSchema);
+// ✅ Check if the model already exists before defining it
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 module.exports = User;
