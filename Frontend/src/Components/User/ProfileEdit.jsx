@@ -3,8 +3,16 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
 const Backend = getGlobalVariable();
-
 function ProfileEdit() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,6 +42,7 @@ function ProfileEdit() {
     } catch (error) {
       console.error(error);
       alert("Update failed. Please try again.");
+
     }
   };
 
