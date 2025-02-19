@@ -103,16 +103,16 @@ function Index() {
         </p>
         <div className="flex justify-center gap-6">
           <Link
-            to="/mechanic-registration"
+            to="/mechanical/signup"
             className="bg-blue-600 text-white py-3 px-8 rounded-lg text-lg hover:bg-blue-700 transition duration-300"
           >
-            Register as Mechanic
+            Signup as Mechanic
           </Link>
           <Link
-            to="/mechanic-login"
+            to="/mechanical/signin"
             className="bg-gray-700 text-white py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition duration-300"
           >
-            Login as Mechanic
+            Signin as Mechanic
           </Link>
         </div>
       </section>

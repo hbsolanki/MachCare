@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function Mechanical() {
-  return (
-    <div>Mechanical</div>
-  )
+  return <>Mechanic</>;
 }
 
-export default Mechanical
+export default Mechanical;
