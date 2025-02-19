@@ -2,8 +2,29 @@ import { Link } from "react-router-dom";
 import Footer from "./Footer";
 import PlanCard from "./PlanCard";
 import FeatureCard from "./FeatureCard";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { getGlobalVariable } from "../../globalVariable";
+
+const Backend = getGlobalVariable();
 
 function Index() {
+  const [plansData, setPlansData] = useState([]); // Corrected initialization
+
+  useEffect(() => {
+    const fetchPlanData = async () => {
+      try {
+        const response = await axios.get(`${Backend}/API/plan`);
+        setPlansData(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching plan data:", error);
+      }
+    };
+
+    fetchPlanData();
+  }, []);
+
   return (
     <div className="font-sans bg-white text-black">
       {/* Hero Section */}
@@ -40,12 +61,6 @@ function Index() {
             >
               Sign in
             </Link>
-            {/* <Link
-              to="/user/vehicle/registration"
-              className="bg-blue-600 text-white py-3 px-8 rounded-lg text-lg hover:bg-blue-700 transition duration-300 shadow-lg"
-            >
-              Add Vehicle
-            </Link> */}
           </div>
         </div>
       </section>
@@ -73,21 +88,15 @@ function Index() {
           maintenance needs.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          <PlanCard
-            title="Basic Plan"
-            description="Routine maintenance, oil changes, tire rotations."
-            price="$99.99/month"
-          />
-          <PlanCard
-            title="Premium Plan"
-            description="Engine diagnostics and repair discounts."
-            price="$199.99/month"
-          />
-          <PlanCard
-            title="Ultimate Plan"
-            description="On-demand repairs & roadside assistance."
-            price="$299.99/month"
-          />
+          {plansData.map((plan) => (
+            <PlanCard
+              key={plan._id} // Use the unique ID for the key
+              title={plan.name}
+              duration={plan.duration}
+              price={`${plan.price}`} // Format price
+              services={plan.services} // Pass the services array
+            />
+          ))}
         </div>
       </section>
 
@@ -103,13 +112,13 @@ function Index() {
         </p>
         <div className="flex justify-center gap-6">
           <Link
-            to="/mechanical/signup"
+            to="/mechanic/signup"
             className="bg-blue-600 text-white py-3 px-8 rounded-lg text-lg hover:bg-blue-700 transition duration-300"
           >
             Signup as Mechanic
           </Link>
           <Link
-            to="/mechanical/signin"
+            to="/mechanic/signin"
             className="bg-gray-700 text-white py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition duration-300"
           >
             Signin as Mechanic

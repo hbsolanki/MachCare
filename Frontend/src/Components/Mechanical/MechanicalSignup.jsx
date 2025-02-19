@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie"; // Import js-cookie to handle cookies
-
 function MechanicalSignup() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -60,19 +58,13 @@ function MechanicalSignup() {
 
     try {
       const backendUrl = getGlobalVariable("Backend"); // Ensure backend URL is correctly retrieved
-      const res = await axios.post(`${backendUrl}/API/user/signup`, formData, {
-        withCredentials: true, // Ensure cookies are handled
-      });
+      const res = await axios.post(
+        `${backendUrl}/API/mechanic/signup`,
+        formData
+      );
 
-      if (res.data.token) {
-        Cookies.set("token", res.data.token, {
-          expires: 1, // Token expires in 1 day
-          secure: true,
-          sameSite: "Strict",
-        });
-
-        navigate("/user"); // Redirect after successful registration
-      }
+      localStorage.setItem("mtoken", res.data.token);
+      navigate("/mechanic"); // Redirect after successful registration
     } catch (error) {
       console.error("Signup Error:", error);
       alert("Registration failed. Please try again.");

@@ -14,7 +14,7 @@ const mechanicSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  mobile: {
+  mobileNo: {
     type: String,
     required: true,
     length: 10,
@@ -27,7 +27,18 @@ const mechanicSchema = new mongoose.Schema({
   address: {
     type: String,
   },
-  coordinates: {},
+  // location: {
+  //   // type: { type: String, default: "Point" }, // GeoJSON type
+  //   // coordinates: { type: [Number], required: true }, // [longitude, latitude]
+  //   latitude: { type: Number },
+  //   longitude: { type: Number },
+  // },
+  latitude: {
+    type: Number,
+  },
+  longitude: {
+    type: Number,
+  },
   provide_services: [],
   notification: [],
   live_service: {},
@@ -37,6 +48,7 @@ const mechanicSchema = new mongoose.Schema({
   },
 });
 
+mechanicSchema.index({ location: "2dsphere" });
 const Mechanic = mongoose.model("Mechanic", mechanicSchema);
 
 module.exports = Mechanic;

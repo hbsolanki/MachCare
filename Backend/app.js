@@ -37,13 +37,13 @@ app.use(bodyParser.json());
 
 // require routers
 const userRouter = require("./Router/user");
-const dealerRouter = require("./Router/dealer");
 const mechanicRouter = require("./Router/mechanic");
 const AdminRouter = require("./Router/admin");
+const planRouter = require("./Router/plans");
 
 app.use("/API/user", userRouter);
 app.use("/API/mechanic", mechanicRouter);
-app.use("/API/dealer", dealerRouter);
+app.use("/API/plan", planRouter);
 app.use("/API/admin", AdminRouter);
 
 app.listen(port, () => {

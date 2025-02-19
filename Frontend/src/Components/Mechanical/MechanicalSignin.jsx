@@ -44,9 +44,10 @@ const MechanicalSignin = () => {
     if (!validate()) return;
 
     try {
-      const res = await axios.post(`${Backend}/API/user/signin`, formData);
+      const res = await axios.post(`${Backend}/API/mechanic/signin`, formData);
+      localStorage.setItem("mtoken", res.data.token);
       console.log(res);
-      navigate("/user");
+      navigate("/mechanic");
     } catch (error) {
       console.error(error);
       alert("Login failed. Please try again.");
@@ -57,7 +58,7 @@ const MechanicalSignin = () => {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-6 sm:p-8">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Login
+          Mechanic Signin
         </h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email Field */}
@@ -97,7 +98,7 @@ const MechanicalSignin = () => {
             type="submit"
             className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300"
           >
-            Mechanic Signin
+            Signin
           </button>
 
           {/* Forgot Password & Signup Links */}

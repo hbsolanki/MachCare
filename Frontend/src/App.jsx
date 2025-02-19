@@ -16,16 +16,15 @@ import UserVehicleRegistration from "./Components/User/UserVehicleRegistration";
 import UserProfile from "./Components/User/Profile";
 import UserProfileEdit from "./Components/User/ProfileEdit";
 import VehicleEdit from "./Components/User/VehicleEdit";
+import NeedHelp from "./Components/User/NeedHelp";
 
 //Mechanical
 import Mechanical from "./Components/Mechanical/Mechanical";
 import MechanicalSignin from "./Components/Mechanical/MechanicalSignin";
 import MechanicalSignup from "./Components/Mechanical/MechanicalSignup";
-import MechanicalProfile from "./Components/Mechanical/Profile";
-import MechanicalProfileEdit from "./Components/Mechanical/ProfileEdit";
-import Services from "./Components/Mechanical/Services";
-import ServicesEdit from "./Components/Mechanical/ServicesEdit";
+import MechanicProfileEdit from "./Components/Mechanical/MechanicProfileEdit";
 import Fund from "./Components/Mechanical/Fund";
+import ManageService from "./Components/Mechanical/ManageService";
 
 function App() {
   return (
@@ -48,19 +47,19 @@ function App() {
           <Route path="/user/profile" element={<UserProfile />} />
           <Route path="/user/profile/edit" element={<UserProfileEdit />} />
           <Route path="/user/vehicle/edit/:vid" element={<VehicleEdit />} />
+          <Route path="/user/service/need" element={<NeedHelp />} />
 
           {/* Mechanical */}
-          <Route path="/mechanical" element={<Mechanical />} />
+          <Route path="/mechanic" element={<Mechanical />} />
           {/* <Route path="/mechanical/signin" element={<Signin />} /> */}
-          <Route path="/mechanical/signup" element={<MechanicalSignup />} />
-          <Route path="/mechanical/signin" element={<MechanicalSignin />} />
-          <Route path="/mechanical/profile" element={<MechanicalProfile />} />
+          <Route path="/mechanic/signup" element={<MechanicalSignup />} />
+          <Route path="/mechanic/signin" element={<MechanicalSignin />} />
           <Route
-            path="/mechanical/profile/edit"
-            element={<MechanicalProfileEdit />}
+            path="/mechanic/profile/edit"
+            element={<MechanicProfileEdit />}
           />
-          <Route path="/mechanical/services" element={<Services />} />
-          <Route path="/mechanical/services/edit" element={<ServicesEdit />} />
+          <Route path="/mechanic/services" element={<ManageService />} />
+          {/* <Route path="/mechanical/services/edit" element={<ServicesEdit />} /> */}
           <Route path="/mechanical/fund" element={<Fund />} />
 
           {/* Util */}

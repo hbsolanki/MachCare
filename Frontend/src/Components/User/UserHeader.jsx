@@ -2,6 +2,9 @@ import GeneralModal from "../Utils/GeneralModel";
 import LOGO from "../../assets/LOGO.jpeg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+
+import { LogOut } from "lucide-react"; // Icons for better UI
+
 import {
   Dialog,
   DialogPanel,
@@ -113,9 +116,9 @@ export default function UserHeader() {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="text-sm font-semibold text-gray-900"
+            className="text-sm flex font-semibold text-gray-900"
           >
-            Logout &rarr;
+            Logout <LogOut className="pl-1 h-5 w-5" />
           </button>
         </div>
       </nav>
@@ -128,11 +131,7 @@ export default function UserHeader() {
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full bg-white px-6 py-6 sm:max-w-sm">
           <div className="flex items-center justify-between">
             <a href="#" className="-m-1.5 p-1.5">
-              <img
-                alt="Logo"
-                src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                className="h-8 w-auto"
-              />
+              <img alt="Logo" src={LOGO} className="h-8 w-auto" />
             </a>
             <button
               onClick={() => setMobileMenuOpen(false)}

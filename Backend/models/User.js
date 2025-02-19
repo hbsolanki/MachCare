@@ -22,11 +22,13 @@ const UserSchema = new mongoose.Schema({
   },
   plan: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "plan",
-      default: [],
+      type: Object,
     },
   ],
+  wallet: {
+    type: Number,
+    default: 0,
+  },
   registered_vehicles: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Vehicle" },
   ],

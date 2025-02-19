@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // Import Models
-const { User, Vehicle } = require("../models/index");
+const { User, Vehicle, Plan } = require("../models/index");
 
 // Import Dependencies
 const {
@@ -114,6 +114,33 @@ router
       res.status(500).json({ message: "Internal server error" });
     }
   });
+router.put("/plan/buy/:pid", verifyToken, async (req, res) => {
+  try {
+    let { pid } = req.params;
+
+    // Find plan and user
+    const planData = await Plan.findById(pid);
+    const userData = await User.findById(req.id);
+
+    if (!planData) {
+      return res.status(404).json({ message: "Plan not found" });
+    }
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Push plan ID to user's plan array
+    userData.plan.push(planData);
+    await userData.save();
+
+    res
+      .status(200)
+      .json({ message: "Plan purchased successfully", user: userData });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 router
   .route("/vehicle/update/:vid")
@@ -142,12 +169,13 @@ router
     }
   });
 
-  router.route("/vehicle/delete/:vid")
+router
+  .route("/vehicle/delete/:vid")
   .all(verifyToken)
   .delete(async (req, res) => {
     try {
       const vid = req.params.vid;
-      
+
       // Ensure `vid` is a valid MongoDB ObjectId
       if (!vid.match(/^[0-9a-fA-F]{24}$/)) {
         return res.status(400).json({ message: "Invalid vehicle ID format" });
@@ -159,12 +187,13 @@ router
         return res.status(404).json({ message: "Vehicle not found" });
       }
 
-      res.status(200).json({ message: "Vehicle deleted successfully", vehicle });
+      res
+        .status(200)
+        .json({ message: "Vehicle deleted successfully", vehicle });
     } catch (error) {
       res.status(500).json({ message: "Server error", error: error.message });
     }
   });
-
 
 router
   .route("/vehicle/new")

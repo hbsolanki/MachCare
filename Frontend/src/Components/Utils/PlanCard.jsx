@@ -1,19 +1,34 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
-function PlanCard({ title, description, price, link }) {
+function PlanCard({ title, description, price, duration, services = [] }) {
   return (
-    <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
-      <h3 className="text-2xl font-bold text-blue-600 mb-4">{title}</h3>
-      <p className="text-gray-600 mb-4">{description}</p>
-      <p className="text-lg font-semibold text-gray-800 mb-6">Price: {price}</p>
-      {link && (
-        <Link
-          to={link}
-          className="bg-blue-600 text-white py-3 px-6 rounded-lg text-lg font-medium hover:bg-blue-700 transition duration-300 shadow-md"
-        >
-          Choose Plan
-        </Link>
+    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+      <h3 className="text-xl font-semibold mb-2 flex justify-between items-center">
+        <span>{title}</span>
+        <span className="text-blue-600 font-bold">₹{price}</span>
+      </h3>
+      <p className="text-gray-700 mb-2">{description}</p>
+
+      {/* Display Duration */}
+      <p className="text-sm text-gray-500 mb-4">
+        <strong>Duration:</strong> {duration}{" "}
+        {duration > 1 ? "months" : "month"}
+      </p>
+
+      {/* Render services as an unordered list */}
+      {services.length > 0 ? (
+        <ul className="list-disc list-inside mb-4 text-gray-600">
+          {services.map((service, index) => (
+            <li key={index} className="flex justify-between">
+              <span>{service.name}</span>
+              <span className="font-semibold">x {service.count}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-gray-500 italic">
+          No services included in this plan.
+        </p>
       )}
     </div>
   );
