@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie"; // Import js-cookie to handle cookies
+
 const Backend = getGlobalVariable();
 
 function UserSignup() {
@@ -57,19 +59,23 @@ function UserSignup() {
       return;
     }
     setIsSubmitting(true);
+
     try {
-      const res = await axios
-        .post(`${Backend}/API/user/new`, formData)
-        .then(() => {
-          navigate("/user");
-        })
-        .catch((err) => {
-          console.log(err);
+      const res = await axios.post(`${Backend}/API/user/signup`, formData, {
+        withCredentials: true, // Ensure cookies are handled
+      });
+
+      if (res.data.token) {
+        Cookies.set("token", res.data.token, {
+          expires: 1, // Token expires in 1 day
+          secure: true,
+          sameSite: "Strict",
         });
-      console.log(res);
-      // alert("User registered successfully!");
+
+        navigate("/user"); // Redirect after successful registration
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Signup Error:", error);
       alert("Registration failed. Please try again.");
     }
     setIsSubmitting(false);
@@ -152,7 +158,7 @@ function UserSignup() {
         </form>
         <div className="text-center text-sm text-gray-600 mt-4">
           Already have an account?{" "}
-          <a href="/signin" className="text-blue-500 hover:underline">
+          <a href="/user/signin" className="text-blue-500 hover:underline">
             Sign in
           </a>
         </div>

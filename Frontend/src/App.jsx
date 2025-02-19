@@ -7,11 +7,11 @@ import Page404 from "./Components/Utils/Page404";
 import Feedback from "./Components/Utils/Feedback";
 import ContactUs from "./Components/Utils/ContactUs";
 import About from "./Components/Utils/About";
-import Signin from "./Components/Utils/Signin";
 
 //User
 import User from "./Components/User/User";
 import UserSignup from "./Components/User/UserSignup";
+import UserSignin from "./Components/User/UserSignin";
 import UserVehicleRegistration from "./Components/User/UserVehicleRegistration";
 import UserProfile from "./Components/User/Profile";
 import UserProfileEdit from "./Components/User/ProfileEdit";
@@ -34,11 +34,12 @@ function App() {
           <Route path="/" element={<Index />} />
 
           {/* login route */}
-          <Route path="/signin" element={<Signin />} />
 
           {/* //User */}
           <Route path="/user" element={<User />} />
           <Route path="/user/signup" element={<UserSignup />} />
+          <Route path="/user/signin" element={<UserSignin />} />
+
           <Route
             path="/user/vehicle/registration"
             element={<UserVehicleRegistration />}
@@ -48,7 +49,7 @@ function App() {
 
           {/* Mechanical */}
           <Route path="/mechanical" element={<Mechanical />} />
-          <Route path="/mechanical/signin" element={<Signin />} />
+          {/* <Route path="/mechanical/signin" element={<Signin />} /> */}
           <Route path="/mechanical/signup" element={<Signup />} />
           <Route path="/mechanical/profile" element={<MechanicalProfile />} />
           <Route
