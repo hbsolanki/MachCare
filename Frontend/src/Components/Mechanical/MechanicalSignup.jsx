@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
 import { useNavigate } from "react-router-dom";
-function MechanicalSignup() {
+import toast, { Toaster } from "react-hot-toast";
+
+const Backend = getGlobalVariable();
+
+const MechanicalSignup = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -45,7 +49,6 @@ function MechanicalSignup() {
     }
     return errors;
   };
-
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
@@ -57,23 +60,23 @@ function MechanicalSignup() {
     setIsSubmitting(true);
 
     try {
-      const backendUrl = getGlobalVariable("Backend"); // Ensure backend URL is correctly retrieved
-      const res = await axios.post(
-        `${backendUrl}/API/mechanic/signup`,
-        formData
-      );
-
+      const res = await axios.post(`${Backend}/API/mechanic/signup`, formData);
       localStorage.setItem("mtoken", res.data.token);
-      navigate("/mechanic"); // Redirect after successful registration
+      toast.success("Successfully Registered!");
+      navigate("/mechanic");
     } catch (error) {
-      console.error("Signup Error:", error);
-      alert("Registration failed. Please try again.");
+      if (error.response && error.response.status === 400) {
+        toast.error(error.response.data.message || "Email already exists!");
+      } else {
+        toast.error("Registration failed. Please try again.");
+      }
     }
     setIsSubmitting(false);
   };
 
   return (
     <>
+      <Toaster />
       <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
         <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 sm:p-8">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
@@ -154,7 +157,10 @@ function MechanicalSignup() {
           </form>
           <div className="text-center text-sm text-gray-600 mt-4">
             Already have an account?{" "}
-            <a href="/user/signin" className="text-blue-500 hover:underline">
+            <a
+              href="/mechanic/signin"
+              className="text-blue-500 hover:underline"
+            >
               Sign in
             </a>
           </div>
@@ -162,6 +168,6 @@ function MechanicalSignup() {
       </div>
     </>
   );
-}
+};
 
 export default MechanicalSignup;

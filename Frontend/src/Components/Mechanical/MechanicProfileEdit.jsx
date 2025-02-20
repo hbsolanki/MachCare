@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react"; // Import icons for password visibility toggle
+import { Eye, EyeOff } from "lucide-react";
 import { getUserLocation } from "../helper/getLocation";
 
 function MechanicProfileEdit() {
@@ -12,9 +12,10 @@ function MechanicProfileEdit() {
     email: "",
     mobileNo: "",
     password: "",
-    latitude: "", // Added
-    longitude: "", // Added
+    latitude: "",
+    longitude: "",
   });
+
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -33,7 +34,13 @@ function MechanicProfileEdit() {
           `${getGlobalVariable("Backend")}/API/mechanic`,
           { headers: { token } }
         );
-        setFormData(response.data);
+
+        const { location } = response.data;
+        setFormData({
+          ...response.data,
+          latitude: location?.coordinates[1] || "",
+          longitude: location?.coordinates[0] || "",
+        });
       } catch (error) {
         console.error("Error fetching mechanic data:", error);
         setErrors({ fetch: "Failed to load mechanic details." });
@@ -52,7 +59,7 @@ function MechanicProfileEdit() {
   const handleSetLocation = () => {
     getUserLocation()
       .then((data) => {
-        console.log(data);
+        console.log("Location:", data);
         setFormData((prevData) => ({
           ...prevData,
           latitude: data.latitude,
@@ -68,15 +75,27 @@ function MechanicProfileEdit() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-
     setIsSubmitting(true);
 
     try {
       const backendUrl = getGlobalVariable("Backend");
-      await axios.put(`${backendUrl}/API/mechanic/profile/update`, formData, {
+
+      const updateData = {
+        ...formData,
+        location: {
+          type: "Point",
+          coordinates: [
+            parseFloat(formData.longitude),
+            parseFloat(formData.latitude),
+          ],
+        },
+      };
+
+      await axios.put(`${backendUrl}/API/mechanic/profile/update`, updateData, {
         headers: { token },
       });
 
+      alert("Profile updated successfully!");
       navigate("/mechanic");
     } catch (error) {
       console.error("Update Error:", error);
@@ -96,7 +115,6 @@ function MechanicProfileEdit() {
           Edit Mechanic Profile
         </h2>
         <form onSubmit={handleFormSubmit} className="space-y-5">
-          {/* Name Field */}
           <div>
             <label className="block text-gray-700 font-medium">Name</label>
             <input
@@ -109,7 +127,6 @@ function MechanicProfileEdit() {
             />
           </div>
 
-          {/* Email Field */}
           <div>
             <label className="block text-gray-700 font-medium">Email</label>
             <input
@@ -122,7 +139,6 @@ function MechanicProfileEdit() {
             />
           </div>
 
-          {/* Mobile Number Field */}
           <div>
             <label className="block text-gray-700 font-medium">Mobile No</label>
             <input
@@ -135,7 +151,6 @@ function MechanicProfileEdit() {
             />
           </div>
 
-          {/* Password Field */}
           <div>
             <label className="block text-gray-700 font-medium">Password</label>
             <div className="relative">
@@ -161,7 +176,6 @@ function MechanicProfileEdit() {
             </div>
           </div>
 
-          {/* Latitude Field */}
           <div>
             <label className="block text-gray-700 font-medium">Latitude</label>
             <input
@@ -175,7 +189,6 @@ function MechanicProfileEdit() {
             />
           </div>
 
-          {/* Longitude Field */}
           <div>
             <label className="block text-gray-700 font-medium">Longitude</label>
             <input
@@ -189,7 +202,6 @@ function MechanicProfileEdit() {
             />
           </div>
 
-          {/* Set Location Button */}
           <button
             type="button"
             onClick={handleSetLocation}
@@ -198,7 +210,6 @@ function MechanicProfileEdit() {
             Set Location
           </button>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting}

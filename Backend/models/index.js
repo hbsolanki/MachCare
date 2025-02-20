@@ -6,11 +6,10 @@ const Plan = require("./plan");
 const Vehicle = require("./vehicle");
 
 module.exports = {
-    Admin,
-    Dealer,
-    Mechanic,
-    User,
-    Plan,
-    Vehicle
-}
-
+  Admin,
+  Dealer,
+  Mechanic,
+  User,
+  Plan,
+  Vehicle,
+};

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie"; // Import js-cookie to handle cookies
+import toast, { Toaster } from "react-hot-toast";
 
 const Backend = getGlobalVariable();
 
@@ -64,97 +64,110 @@ function UserSignup() {
       const res = await axios.post(`${Backend}/API/user/signup`, formData);
 
       localStorage.setItem("token", res.data.token);
+      toast.success("Successfully Registered! ");
       navigate("/user");
     } catch (error) {
       console.error("Signup Error:", error);
-      alert("Registration failed. Please try again.");
+
+      if (error.response && error.response.status === 400) {
+        toast.error("Email already exists! ");
+      } else {
+        toast.error("Registration failed. Please try again.");
+      }
     }
     setIsSubmitting(false);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 sm:p-8">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Register New User
-        </h2>
-        <form onSubmit={handleFormSubmit} className="space-y-5">
-          <div>
-            <label className="block text-gray-700 font-medium">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-              placeholder="Enter your name"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name}</p>
-            )}
-          </div>
+    <>
+      <Toaster />
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
+        <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 sm:p-8">
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+            Register New User
+          </h2>
+          <form onSubmit={handleFormSubmit} className="space-y-5">
+            <div>
+              <label className="block text-gray-700 font-medium">Name</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                placeholder="Enter your name"
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm">{errors.name}</p>
+              )}
+            </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-              placeholder="Enter your email"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email}</p>
-            )}
-          </div>
+            <div>
+              <label className="block text-gray-700 font-medium">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                placeholder="Enter your email"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email}</p>
+              )}
+            </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium">Mobile No</label>
-            <input
-              type="text"
-              name="mobileNo"
-              value={formData.mobileNo}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-              placeholder="Enter your mobile number"
-            />
-            {errors.mobileNo && (
-              <p className="text-red-500 text-sm">{errors.mobileNo}</p>
-            )}
-          </div>
+            <div>
+              <label className="block text-gray-700 font-medium">
+                Mobile No
+              </label>
+              <input
+                type="text"
+                name="mobileNo"
+                value={formData.mobileNo}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                placeholder="Enter your mobile number"
+              />
+              {errors.mobileNo && (
+                <p className="text-red-500 text-sm">{errors.mobileNo}</p>
+              )}
+            </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-              placeholder="Enter your password"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password}</p>
-            )}
-          </div>
+            <div>
+              <label className="block text-gray-700 font-medium">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                placeholder="Enter your password"
+              />
+              {errors.password && (
+                <p className="text-red-500 text-sm">{errors.password}</p>
+              )}
+            </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300"
-          >
-            {isSubmitting ? "Submitting..." : "Register"}
-          </button>
-        </form>
-        <div className="text-center text-sm text-gray-600 mt-4">
-          Already have an account?{" "}
-          <a href="/user/signin" className="text-blue-500 hover:underline">
-            Sign in
-          </a>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300"
+            >
+              {isSubmitting ? "Submitting..." : "Register"}
+            </button>
+          </form>
+          <div className="text-center text-sm text-gray-600 mt-4">
+            Already have an account?{" "}
+            <a href="/user/signin" className="text-blue-500 hover:underline">
+              Sign in
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

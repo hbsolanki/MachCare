@@ -3,6 +3,7 @@ const router = express.Router();
 
 // Import Models
 const { User, Vehicle, Plan } = require("../models/index");
+const findfindNearestMechanic = require("../helper/nearestMechanic");
 
 // Import Dependencies
 const {
@@ -13,15 +14,26 @@ const {
   verifyToken,
 } = require("../auth/auth");
 const { db, findById } = require("../models/mechanic");
-
 router.post("/signup", async (req, res) => {
   try {
-    const userData = req.body;
-    userData.password = encryptPassword(userData.password);
-    const user = new User(userData);
+    const { email, password, ...otherData } = req.body;
+
+    // Check if the email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    // Encrypt the password
+    const hashedPassword = encryptPassword(password);
+    const user = new User({ email, password: hashedPassword, ...otherData });
+
+    // Save user to database
     const data = await user.save();
+
+    // Generate authentication token
     const token = sendToken(data._id, data.email);
-    res.send({ message: "Login successful", token });
+    res.status(201).json({ message: "Signup successful", token });
   } catch (error) {
     console.error("Signup error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -219,6 +231,16 @@ router
       console.error("Error registering vehicle:", error);
       res.status(500).json({ message: "Internal server error" });
     }
+  });
+
+router
+  .route("/service/need/findMechanic")
+  .all(verifyToken)
+  .post(async (req, res) => {
+    const { location, selectedServices } = req.body;
+    console.log(req.body);
+    const output = await findfindNearestMechanic(location, selectedServices);
+    // console.log(output);
   });
 
 module.exports = router;

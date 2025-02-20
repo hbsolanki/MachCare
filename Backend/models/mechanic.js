@@ -27,17 +27,12 @@ const mechanicSchema = new mongoose.Schema({
   address: {
     type: String,
   },
-  // location: {
-  //   // type: { type: String, default: "Point" }, // GeoJSON type
-  //   // coordinates: { type: [Number], required: true }, // [longitude, latitude]
-  //   latitude: { type: Number },
-  //   longitude: { type: Number },
-  // },
-  latitude: {
-    type: Number,
-  },
-  longitude: {
-    type: Number,
+  location: {
+    type: { type: String, default: "Point" }, // GeoJSON type
+    coordinates: {
+      type: [Number],
+      default: [72.8777, 19.076], // Default: [longitude, latitude] (Example: Mumbai, India)
+    },
   },
   provide_services: [],
   notification: [],

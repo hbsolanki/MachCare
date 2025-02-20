@@ -29,15 +29,29 @@ router.get("/", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 router.post("/signup", async (req, res) => {
   try {
-    const data = req.body;
-    data.password = encryptPassword(data.password);
-    const mechanic = new Mechanic(data);
+    const { email, password, ...otherData } = req.body;
+
+    // Check if email already exists
+    const existingUser = await Mechanic.findOne({ email });
+    console.log(existingUser);
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    // Encrypt password and create user
+    const hashedPassword = encryptPassword(password);
+    const mechanic = new Mechanic({
+      email,
+      password: hashedPassword,
+      ...otherData,
+    });
     const savedData = await mechanic.save();
+
+    // Generate token
     const token = sendToken(savedData._id, savedData.email);
-    res.send({ message: "Login successful", token });
+    res.status(201).json({ message: "Signup successful", token });
   } catch (error) {
     console.error("Signup error:", error);
     res.status(500).json({ message: "Internal server error" });

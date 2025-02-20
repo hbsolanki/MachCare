@@ -66,9 +66,16 @@ function NeedHelp() {
   };
 
   // Handle form submission
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Selected Services:", selectedServices);
-    alert(`Selected Services: ${selectedServices.join(", ")}`);
+    const res = await axios.post(
+      `${Backend}/API/user/service/need/findMechanic`,
+      { location, selectedServices },
+      {
+        headers: { token: localStorage.token },
+      }
+    );
+    console.log(res);
   };
 
   return (

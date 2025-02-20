@@ -26,9 +26,12 @@ import MechanicProfileEdit from "./Components/Mechanical/MechanicProfileEdit";
 import Fund from "./Components/Mechanical/Fund";
 import ManageService from "./Components/Mechanical/ManageService";
 
+import { Toaster } from "react-hot-toast";
+
 function App() {
   return (
     <>
+      <Toaster position="top-center" />
       <Router>
         <Routes>
           <Route path="/" element={<Index />} />

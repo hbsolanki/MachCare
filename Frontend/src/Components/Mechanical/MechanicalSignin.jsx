@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
+import toast, { Toaster } from "react-hot-toast";
 
 const Backend = getGlobalVariable();
 
@@ -46,16 +47,16 @@ const MechanicalSignin = () => {
     try {
       const res = await axios.post(`${Backend}/API/mechanic/signin`, formData);
       localStorage.setItem("mtoken", res.data.token);
-      console.log(res);
+      toast.success("Successfully Signed In!");
       navigate("/mechanic");
     } catch (error) {
-      console.error(error);
-      alert("Login failed. Please try again.");
+      toast.error("Invalid Email or Password");
     }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+      <Toaster />
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-6 sm:p-8">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Mechanic Signin
@@ -107,7 +108,7 @@ const MechanicalSignin = () => {
               Forgot Password?
             </a>
             <span className="mx-2">|</span>
-            <a href="/signup" className="hover:text-blue-500">
+            <a href="/mechanic/signup" className="hover:text-blue-500">
               Create an Account
             </a>
           </div>
