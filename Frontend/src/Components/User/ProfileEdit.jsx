@@ -14,6 +14,7 @@ function ProfileEdit() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,14 +108,23 @@ function ProfileEdit() {
           </div>
           <div>
             <label className="block text-gray-700 font-medium">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-              placeholder="Enter new password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"} // Toggle between text and password
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                placeholder="Enter new password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)} // Toggle visibility
+                className="absolute right-3 top-3 text-gray-600"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password}</p>
             )}

@@ -34,7 +34,7 @@ const mechanicSchema = new mongoose.Schema({
       default: [72.8777, 19.076], // Default: [longitude, latitude] (Example: Mumbai, India)
     },
   },
-  provide_services: [],
+  provide_services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }],
   notification: [],
   live_service: {},
   isAvailable: {

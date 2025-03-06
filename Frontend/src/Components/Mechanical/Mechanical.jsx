@@ -154,7 +154,9 @@ function Mechanical() {
                 key={index}
                 className="bg-gray-200 p-4 rounded-lg shadow-md text-center"
               >
-                <span className="text-gray-800 font-medium">{service}</span>
+                <span className="text-gray-800 font-medium">
+                  {service.name}
+                </span>
               </div>
             ))}
           </div>

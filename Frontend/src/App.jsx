@@ -13,7 +13,7 @@ import User from "./Components/User/User";
 import UserSignup from "./Components/User/UserSignup";
 import UserSignin from "./Components/User/UserSignin";
 import UserVehicleRegistration from "./Components/User/UserVehicleRegistration";
-import UserProfile from "./Components/User/Profile";
+// import UserProfile from "./Components/User/Profile";
 import UserProfileEdit from "./Components/User/ProfileEdit";
 import VehicleEdit from "./Components/User/VehicleEdit";
 import NeedHelp from "./Components/User/NeedHelp";
@@ -47,7 +47,7 @@ function App() {
             path="/user/vehicle/new"
             element={<UserVehicleRegistration />}
           />
-          <Route path="/user/profile" element={<UserProfile />} />
+          {/* <Route path="/user/profile" element={<UserProfile />} /> */}
           <Route path="/user/profile/edit" element={<UserProfileEdit />} />
           <Route path="/user/vehicle/edit/:vid" element={<VehicleEdit />} />
           <Route path="/user/service/need" element={<NeedHelp />} />

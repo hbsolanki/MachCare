@@ -147,7 +147,7 @@ function UserVehicleRegistration() {
                 })}
                 className="w-1/4 p-3 border rounded-lg text-center"
                 placeholder="HM"
-                maxLength={2}
+                maxLength={3}
               />
               <input
                 type="text"

@@ -12,7 +12,9 @@ const {
 router.get("/", verifyToken, async (req, res) => {
   try {
     console.log(req.id);
-    const dbMechanic = await Mechanic.findById(req.id);
+    const dbMechanic = await Mechanic.findById(req.id).populate(
+      "provide_services"
+    );
 
     if (!dbMechanic) {
       return res.status(404).json({ message: "Mechanic not found" });

@@ -1,8 +1,14 @@
 import React from "react";
 
-function PlanCard({ title, description, price, duration, services = [] }) {
+function ActivePlanCard({
+  title,
+  description,
+  price,
+  duration,
+  services = [],
+}) {
   return (
-    <div className="bg-white p-6 rounded-lg   hover:shadow-xl hover:scale-105 transition-all duration-300">
+    <div className="bg-white p-6  ">
       <h3 className="text-xl font-semibold mb-2 flex justify-between items-center">
         <span>{title}</span>
         <span className="text-blue-600 font-bold">₹{price}</span>
@@ -11,8 +17,8 @@ function PlanCard({ title, description, price, duration, services = [] }) {
 
       {/* Display Duration */}
       <p className=" font-semibold  flex text-sm text-gray-500 mb-2">
-        <strong>Duration:</strong> {duration}{" "}
-        {duration > 1 ? "months" : "month"}
+        <strong>Remaining Days: </strong> {duration}{" "}
+        {duration > 1 ? " Days" : " Day"}
       </p>
 
       {/* Render services as an unordered list */}
@@ -34,4 +40,4 @@ function PlanCard({ title, description, price, duration, services = [] }) {
   );
 }
 
-export default PlanCard;
+export default ActivePlanCard;
