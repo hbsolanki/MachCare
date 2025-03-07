@@ -1,121 +1,97 @@
 const mongoose = require("mongoose");
-require("dotenv").config(); // For loading environment variables (DB_URL)
+const fs = require("fs");
+require("dotenv").config(); // Load environment variables
 
-const serviceSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true, // Ensures service names are unique in the database
-    trim: true, // Trims any extra spaces around the service name
-  },
-  description: {
-    type: String,
-    required: true,
-    trim: true, // Trims extra spaces
-  },
-  range: {
-    type: Number,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true, // Price for the service
-  },
-  service_in_plan: [{ type: mongoose.Schema.Types.ObjectId, ref: "Plan" }],
-});
+// Check if the model already exists to prevent OverwriteModelError
+const Service =
+  mongoose.models.Service ||
+  mongoose.model(
+    "Service",
+    new mongoose.Schema({
+      name: { type: String, required: true, unique: true, trim: true },
+      description: { type: String, required: true, trim: true },
+      range: { type: Number, required: true },
+      vehicle: [{ type: String, enum: ["car", "bike"] }], // Added vehicle array
+      price: { type: Number, required: true },
+      service_in_plan: [{ type: mongoose.Schema.Types.ObjectId, ref: "Plan" }],
+    })
+  );
 
-const Service = mongoose.model("Service", serviceSchema);
-
-// Connecting to mongoose server
-main()
-  .then(() => {
-    console.log("db connection established");
-    createFakeServices(); // Call to create fake data after successful DB connection
-  })
-  .catch((err) => console.log(err));
-
+// Connect to MongoDB
 async function main() {
-  await mongoose.connect(process.env.DB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(process.env.DB_URL);
+  console.log("DB connection established");
+  await backupAndCreateServices();
+  mongoose.connection.close(); // Close connection after seeding
 }
 
-// Create fake data for the services
-async function createFakeServices() {
+// Backup old services and insert new ones
+async function backupAndCreateServices() {
   try {
-    // Clear the existing services (Optional, if you want to start fresh)
-    await Service.deleteMany({});
+    const oldServices = await Service.find({});
 
-    // List of services to be added
+    if (oldServices.length > 0) {
+      fs.writeFileSync(
+        "backup_services.json",
+        JSON.stringify(oldServices, null, 2)
+      );
+      console.log("Backup of old services created successfully!");
+    }
+
+    await Service.deleteMany({});
+    console.log("Old services removed!");
+
     const services = [
       {
         name: "Complete vehicle servicing",
-        description: "Comprehensive check-up and servicing of the vehicle.",
+        description: "Full check-up",
         range: 0,
-        price: 200, // Example price
+        vehicle: ["car", "bike"],
+        price: 200,
         service_in_plan: [],
       },
       {
         name: "Engine diagnostics",
-        description: "Detailed diagnostics of the engine health.",
+        description: "Engine health check",
         range: 2,
-        price: 100, // Example price
+        vehicle: ["car"],
+        price: 100,
         service_in_plan: [],
       },
       {
-        name: "Battery check and replacement if needed",
-        description: "Check and replace the vehicle battery if necessary.",
+        name: "Battery check",
+        description: "Check and replace battery",
         range: 1,
-        price: 50, // Example price
+        vehicle: ["car", "bike"],
+        price: 50,
         service_in_plan: [],
       },
       {
-        name: "Wheel alignment and balancing",
-        description:
-          "Align and balance the vehicle wheels for optimal performance.",
+        name: "Wheel alignment",
+        description: "Balance wheels",
         range: 2,
-        price: 80, // Example price
+        vehicle: ["car"],
+        price: 80,
         service_in_plan: [],
       },
       {
-        name: "Emergency roadside assistance",
-        description:
-          "Assistance in case of a roadside emergency like a flat tire.",
+        name: "Roadside assistance",
+        description: "Emergency help",
         range: 3,
-        price: 150, // Example price
-        service_in_plan: [],
-      },
-      {
-        name: "Basic vehicle inspection",
-        description: "Basic inspection of vehicle parts and systems.",
-        range: 3,
-        price: 60, // Example price
-        service_in_plan: [],
-      },
-      {
-        name: "Oil check and top-up",
-        description: "Check the oil levels and top-up if needed.",
-        range: 3,
-        price: 40, // Example price
-        service_in_plan: [],
-      },
-      {
-        name: "Tire pressure check",
-        description: "Check and adjust tire pressure for safety.",
-        range: 0,
-        price: 10, // Example price
+        vehicle: ["car", "bike"],
+        price: 150,
         service_in_plan: [],
       },
     ];
 
-    // Insert the services into the database
     await Service.insertMany(services);
-    console.log("Fake services have been added successfully!");
+    console.log("New fake services added successfully!");
   } catch (err) {
-    console.error("Error while adding fake services:", err);
-  } finally {
-    // Close the connection after inserting data
-    mongoose.connection.close();
+    console.error("Error updating services:", err);
   }
 }
+
+// Run script
+main().catch(console.error);
+
+module.exports = Service;

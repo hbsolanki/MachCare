@@ -1,0 +1,82 @@
+[
+  {
+    "vehicle": [],
+    "_id": "67cb4877d4ffd8790c7e85a6",
+    "name": "Complete vehicle servicing",
+    "description": "Comprehensive check-up and servicing of the vehicle.",
+    "range": 0,
+    "price": 200,
+    "service_in_plan": [],
+    "__v": 0
+  },
+  {
+    "vehicle": [],
+    "_id": "67cb4877d4ffd8790c7e85a7",
+    "name": "Engine diagnostics",
+    "description": "Detailed diagnostics of the engine health.",
+    "range": 2,
+    "price": 100,
+    "service_in_plan": [],
+    "__v": 0
+  },
+  {
+    "vehicle": [],
+    "_id": "67cb4877d4ffd8790c7e85a8",
+    "name": "Battery check and replacement if needed",
+    "description": "Check and replace the vehicle battery if necessary.",
+    "range": 1,
+    "price": 50,
+    "service_in_plan": [],
+    "__v": 0
+  },
+  {
+    "vehicle": [],
+    "_id": "67cb4877d4ffd8790c7e85a9",
+    "name": "Wheel alignment and balancing",
+    "description": "Align and balance the vehicle wheels for optimal performance.",
+    "range": 2,
+    "price": 80,
+    "service_in_plan": [],
+    "__v": 0
+  },
+  {
+    "vehicle": [],
+    "_id": "67cb4877d4ffd8790c7e85aa",
+    "name": "Emergency roadside assistance",
+    "description": "Assistance in case of a roadside emergency like a flat tire.",
+    "range": 3,
+    "price": 150,
+    "service_in_plan": [],
+    "__v": 0
+  },
+  {
+    "vehicle": [],
+    "_id": "67cb4877d4ffd8790c7e85ab",
+    "name": "Basic vehicle inspection",
+    "description": "Basic inspection of vehicle parts and systems.",
+    "range": 3,
+    "price": 60,
+    "service_in_plan": [],
+    "__v": 0
+  },
+  {
+    "vehicle": [],
+    "_id": "67cb4877d4ffd8790c7e85ac",
+    "name": "Oil check and top-up",
+    "description": "Check the oil levels and top-up if needed.",
+    "range": 3,
+    "price": 40,
+    "service_in_plan": [],
+    "__v": 0
+  },
+  {
+    "vehicle": [],
+    "_id": "67cb4877d4ffd8790c7e85ad",
+    "name": "Tire pressure check",
+    "description": "Check and adjust tire pressure for safety.",
+    "range": 0,
+    "price": 10,
+    "service_in_plan": [],
+    "__v": 0
+  }
+]

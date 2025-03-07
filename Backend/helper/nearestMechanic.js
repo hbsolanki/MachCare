@@ -44,5 +44,42 @@ async function findNearestMechanic(location, selectedServices = []) {
     return [];
   }
 }
+const calculateDistance = (location1, location2) => {
+  const toRadians = (degree) => (degree * Math.PI) / 180;
 
-module.exports = findNearestMechanic;
+  const R = 6371; // Earth's radius in kilometers
+  const lat1 = location1.latitude;
+  const lon1 = location1.longitude;
+
+  // Extract latitude and longitude from GeoJSON format
+  const [lon2, lat2] = location2.coordinates;
+
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(lat1)) *
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  let distance = R * c; // Distance in kilometers
+
+  // Convert to meters if less than 1km
+  if (distance < 1) {
+    distance = (distance * 1000).toFixed(0) + " meter";
+  } else {
+    distance = distance.toFixed(2) + " km";
+  }
+
+  return distance;
+};
+
+// Export both functions
+module.exports = {
+  findNearestMechanic,
+  calculateDistance,
+};

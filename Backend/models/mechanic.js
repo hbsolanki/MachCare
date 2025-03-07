@@ -21,8 +21,14 @@ const mechanicSchema = new mongoose.Schema({
   },
   rating: {
     type: Number,
+    default: 0,
     min: 0,
     max: 5,
+  },
+  grade: {
+    type: String,
+    enum: ["A", "B", "C", "D"], // Enum values
+    default: "D", // Default grade
   },
   address: {
     type: String,

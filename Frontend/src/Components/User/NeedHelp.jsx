@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
 import { getUserLocation } from "../helper/getLocation";
-
-import toast, { Toaster } from "react-hot-toast"; // ✅ Import react-hot-toast
+import toast, { Toaster } from "react-hot-toast";
+import MechanicList from "./NeedHelp/MechanicList";
+import VehicleSelection from "./NeedHelp/VehicleSelection";
+import ServiceSelection from "./NeedHelp/ServiceSelection";
 
 const Backend = getGlobalVariable();
 
@@ -11,38 +13,50 @@ function NeedHelp() {
   const [userData, setUserData] = useState(null);
   const [availableServices, setAvailableServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState(
+    JSON.parse(localStorage.getItem("userLocation")) || null
+  );
+  const [locationPermission, setLocationPermission] = useState(!!location);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [nearMechanic, setNearMechanic] = useState([]);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await axios.get(`${Backend}/API/user`, {
-          headers: { token: localStorage.token },
-        });
-        setUserData(res.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    getUserLocation()
-      .then((data) => {
-        setLocation({ longitude: data.longitude, latitude: data.latitude });
-      })
-      .catch((err) => console.log("Error fetching location:", err));
-
-    fetchUserData();
+    if (!location) {
+      requestLocation();
+    } else {
+      fetchUserData(); // Fetch user data if location is already stored
+    }
   }, []);
 
-  useEffect(() => {
-    if (userData && userData.plan.length > 0) {
-      calculateUserServices();
+  const requestLocation = async () => {
+    try {
+      const data = await getUserLocation();
+      const newLocation = {
+        longitude: data.longitude,
+        latitude: data.latitude,
+      };
+      setLocation(newLocation);
+      setLocationPermission(true);
+      localStorage.setItem("userLocation", JSON.stringify(newLocation));
+      fetchUserData(); // Fetch user data only after location is available
+    } catch (err) {
+      toast.error("Location access denied. Please enable location services.");
     }
-  }, [userData]);
+  };
 
-  const calculateUserServices = () => {
+  const fetchUserData = async () => {
+    try {
+      const res = await axios.get(`${Backend}/API/user`, {
+        headers: { token: localStorage.token },
+      });
+      setUserData(res.data);
+      calculateUserServices(res.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  const calculateUserServices = (userData) => {
     let totalServices = [];
 
     userData.plan.forEach((plan) => {
@@ -63,7 +77,7 @@ function NeedHelp() {
 
   const handleSubmit = async () => {
     if (!location) {
-      console.log("Location not available yet.");
+      toast.error("Please enable location services first.");
       return;
     }
 
@@ -80,9 +94,11 @@ function NeedHelp() {
         },
         { headers: { token: localStorage.token } }
       );
+
       setNearMechanic(res.data);
+
       if (res.data.length === 0) {
-        toast.error("No Near Mechanic Available");
+        toast.error("No Nearby Mechanic Available");
       }
     } catch (error) {
       console.error("Error finding mechanics:", error);
@@ -91,123 +107,59 @@ function NeedHelp() {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {nearMechanic.length > 0 ? (
-        <>
-          <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4">
-            Nearby Mechanics
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {nearMechanic.map((mechanic) => (
-              <div
-                key={mechanic._id}
-                className="bg-white shadow-lg rounded-lg p-4 flex flex-col"
-              >
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {mechanic.name}
-                </h3>
-                <p className="text-gray-600">📧 {mechanic.email}</p>
-                <p className="text-gray-600">📞 {mechanic.mobileNo}</p>
-                <p className="text-gray-600">
-                  📍 Location: {mechanic.location.coordinates.join(", ")}
-                </p>
+      <Toaster />
 
-                <p className="text-gray-600 font-semibold mt-2">
-                  Services Offered:
-                </p>
-                <ul className="list-disc pl-5">
-                  {mechanic.provide_services.map((service) => (
-                    <li key={service._id} className="text-gray-700">
-                      {service.name}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-4 flex items-center">
-                  <button className="text-blue-700">Select Mechanic</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
+      {!locationPermission ? (
+        <div className="flex flex-col items-center justify-center h-screen">
+          <p className="mb-4 text-lg font-semibold">
+            Please allow location access to continue
+          </p>
+          <button
+            onClick={requestLocation}
+            className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700"
+          >
+            Enable Location
+          </button>
+        </div>
+      ) : nearMechanic.length > 0 ? (
+        <MechanicList mechanics={nearMechanic} />
       ) : (
         <>
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            Select Vehicle for Service
-          </h2>
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-sm text-gray-600">
+              Location: {location?.latitude}, {location?.longitude}
+            </p>
+            <button
+              onClick={requestLocation}
+              className="px-3 py-1 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700"
+            >
+              Refresh Location
+            </button>
+          </div>
 
-          {userData?.registered_vehicles?.length > 0 ? (
-            <ul className="bg-white shadow rounded-lg p-4">
-              {userData.registered_vehicles.map((vehicle) => (
-                <li key={vehicle._id} className="flex items-center gap-3 py-2">
-                  <input
-                    type="radio"
-                    name="selectedVehicle"
-                    value={vehicle._id}
-                    onChange={() => setSelectedVehicle(vehicle._id)}
-                    checked={selectedVehicle === vehicle._id}
-                  />
-                  <span className="text-gray-700">
-                    {vehicle.model} ({vehicle.vehicleNo}) -{" "}
-                    {vehicle.fuelType.toUpperCase()},{" "}
-                    {vehicle.manufacturingYear}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500">No registered vehicles available.</p>
-          )}
-
-          <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4">
-            Available Services
-          </h2>
-
-          {availableServices.length > 0 ? (
-            <ul className="bg-white shadow rounded-lg p-4">
-              {availableServices.map((service, index) => (
-                <li
-                  key={index}
-                  className="flex items-center justify-between border-b py-2"
-                >
-                  <label
-                    className={`flex items-center gap-3 cursor-pointer ${
-                      service.count === 0 ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedServices.includes(service.name)}
-                      onChange={() =>
-                        setSelectedServices((prevSelected) =>
-                          prevSelected.includes(service.name)
-                            ? prevSelected.filter(
-                                (name) => name !== service.name
-                              )
-                            : [...prevSelected, service.name]
-                        )
-                      }
-                      className="w-5 h-5 text-blue-600 border-gray-300 rounded cursor-pointer"
-                      disabled={service.count === 0}
-                    />
-                    <span className="text-gray-700">{service.name}</span>
-                  </label>
-                  <span className="font-semibold text-blue-600">
-                    x {service.count}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500">No services available.</p>
-          )}
-
+          <VehicleSelection
+            userData={userData}
+            selectedVehicle={selectedVehicle}
+            setSelectedVehicle={setSelectedVehicle}
+          />
+          <ServiceSelection
+            availableServices={availableServices}
+            selectedServices={selectedServices}
+            setSelectedServices={setSelectedServices}
+          />
           {availableServices.length > 0 &&
             selectedVehicle &&
             selectedServices.length > 0 && (
               <button
                 onClick={handleSubmit}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700"
+                className={`mt-4 px-4 py-2 text-white font-semibold rounded-lg ${
+                  !location
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
+                disabled={!location}
               >
-                Submit Request
+                Request
               </button>
             )}
         </>

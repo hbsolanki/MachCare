@@ -99,6 +99,10 @@ function ManageService() {
                 />
                 <span className="font-semibold">{service.name}</span>
               </div>
+              <p className="text-sm text-gray-600 mt-2">
+                <strong>Vehicle:</strong> {service.vehicle.join(", ")}
+              </p>
+
               <p className="text-sm text-gray-600 mt-1">
                 {service.description}
               </p>

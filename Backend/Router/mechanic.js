@@ -11,7 +11,6 @@ const {
 } = require("../auth/auth");
 router.get("/", verifyToken, async (req, res) => {
   try {
-    console.log(req.id);
     const dbMechanic = await Mechanic.findById(req.id).populate(
       "provide_services"
     );
@@ -21,10 +20,7 @@ router.get("/", verifyToken, async (req, res) => {
     }
 
     // Decrypt Mechanic password (if needed)
-    dbMechanic.password = decryptPassword(dbMechanic.password);
-
-    console.log("Mechanic data:", dbMechanic);
-
+    // dbMechanic.password = decryptPassword(dbMechanic.password);
     return res.json(dbMechanic);
   } catch (error) {
     console.error("Error fetching Mechanic:", error);
@@ -37,7 +33,6 @@ router.post("/signup", async (req, res) => {
 
     // Check if email already exists
     const existingUser = await Mechanic.findOne({ email });
-    console.log(existingUser);
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
@@ -88,14 +83,13 @@ router.post("/signin", async (req, res) => {
     }
 
     // Compare hashed passwords
-    const isMatch = comparePassword(password, dbUser.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    // const isMatch = comparePassword(password, dbUser.password);
+    // if (!isMatch) {
+    //   return res.status(401).json({ message: "Invalid credentials" });
+    // }
 
     // Generate JWT token
     const token = sendToken(dbUser._id, dbUser.email);
-    console.log(token);
     res.status(200).json({ message: "Login successful", token });
     return;
   } catch (error) {
@@ -123,7 +117,6 @@ router.put("/updateAvailability", verifyToken, async (req, res) => {
 });
 
 router.put("/profile/update", verifyToken, async (req, res) => {
-  console.log(req.body);
   try {
     const updatedData = await Mechanic.findByIdAndUpdate(req.id, req.body, {
       new: true,
