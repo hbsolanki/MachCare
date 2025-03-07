@@ -40,11 +40,13 @@ const userRouter = require("./Router/user");
 const mechanicRouter = require("./Router/mechanic");
 const AdminRouter = require("./Router/admin");
 const planRouter = require("./Router/plans");
+const serviceRouter = require("./Router/service");
 
 app.use("/API/user", userRouter);
 app.use("/API/mechanic", mechanicRouter);
 app.use("/API/plan", planRouter);
 app.use("/API/admin", AdminRouter);
+app.use("/API/service", serviceRouter);
 
 app.listen(port, () => {
   console.log(`Server Listen on Port ${port}`);

@@ -2,23 +2,16 @@ import GeneralModal from "../Utils/GeneralModel";
 import LOGO from "../../assets/LOGO.jpeg";
 import { useNavigate } from "react-router-dom";
 import { useState, useCallback } from "react";
-
-import { LogOut } from "lucide-react";
+import { LogOut, Bell, Settings, Wallet } from "lucide-react";
 import toast from "react-hot-toast";
+import { Dialog, DialogPanel } from "@headlessui/react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
-import { Dialog, DialogPanel, Popover, PopoverGroup } from "@headlessui/react";
-import {
-  Bars3Icon,
-  XMarkIcon,
-  GlobeAltIcon,
-  DocumentTextIcon,
-  QuestionMarkCircleIcon,
-} from "@heroicons/react/24/outline";
-
-export default function UserHeader() {
+export default function MechanicHeader({ mechanicData }) {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogout = useCallback(() => {
     try {
@@ -35,10 +28,10 @@ export default function UserHeader() {
     <header className="bg-white shadow-sm">
       <nav className="mx-auto flex max-w-7xl items-center justify-between mt-4 p-2 lg:px-8">
         {/* Logo */}
-        <div className="flex  lg:flex-1">
+        <div className="flex lg:flex-1">
           <a href="/" className="">
-            <span className="sr-only ">MechCare</span>
-            <img alt="Logo" src={LOGO} className="h-10  w-auto" />
+            <span className="sr-only">MechCare</span>
+            <img alt="Logo" src={LOGO} className="h-10 w-auto" />
           </a>
         </div>
 
@@ -55,26 +48,33 @@ export default function UserHeader() {
         </div>
 
         {/* Desktop Navigation */}
-        <PopoverGroup className="hidden lg:flex lg:gap-x-12">
+        <div className="hidden lg:flex lg:gap-x-12">
           <a
-            href="#ExploreOtherPlansSection"
+            href="/mechanic/services"
             className="text-sm font-semibold text-gray-900 flex items-center gap-1"
           >
-            <DocumentTextIcon className="h-5 w-5" /> Plans
+            <Settings className="h-5 w-5" /> Manage Service
           </a>
           <a
-            href="#"
+            href="/mechanic/wallet"
             className="text-sm font-semibold text-gray-900 flex items-center gap-1"
           >
-            <GlobeAltIcon className="h-5 w-5" /> Regions We Serve
+            <Wallet className="h-5 w-5" /> Wallet
           </a>
-          <a
-            href="/user/service/need"
-            className="text-sm font-semibold text-red-600 flex items-center gap-1"
+          {/* Notification Bell */}
+          <button
+            className="relative bg-gray-200 p-2 rounded-full hover:bg-gray-300 transition"
+            onClick={() => setShowNotifications(!showNotifications)}
           >
-            <QuestionMarkCircleIcon className="h-5 w-5" /> Need Help
-          </a>
-        </PopoverGroup>
+            <Bell className="h-6 w-6 text-gray-700" />
+            {console.log(mechanicData)}
+            {mechanicData?.notification?.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 rounded-full">
+                {mechanicData.notification.length}
+              </span>
+            )}
+          </button>
+        </div>
 
         {/* Logout Button */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -106,26 +106,33 @@ export default function UserHeader() {
               <XMarkIcon className="h-6 w-6" />
             </button>
           </div>
+
           <div className="space-y-2 py-6">
             <a
-              href="#ExploreOtherPlansSection"
-              className="block rounded-lg px-3 py-2 text-base leading-7 font-semibold text-gray-900 flex items-center gap-1 hover:bg-gray-50"
+              href="/mechanic/manage-service"
+              className="block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 flex items-center gap-1 hover:bg-gray-50"
             >
-              <DocumentTextIcon className="h-5 w-5" /> Plans
+              <Settings className="h-5 w-5" /> Manage Service
             </a>
             <a
-              href="#"
-              className="block rounded-lg px-3 py-2 text-base leading-7 font-semibold text-gray-900 flex items-center gap-1 hover:bg-gray-50"
+              href="/mechanic/wallet"
+              className="block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 flex items-center gap-1 hover:bg-gray-50"
             >
-              <GlobeAltIcon className="h-5 w-5" /> Regions We Serve
+              <Wallet className="h-5 w-5" /> Wallet
             </a>
-            <a
-              href="#"
-              className="block rounded-lg px-3 py-2 text-base leading-7 font-semibold text-red-600 flex items-center gap-1 hover:bg-gray-50"
+            <button
+              className="relative block w-full rounded-lg px-3 py-2 text-base font-semibold text-gray-900 flex items-center gap-1 hover:bg-gray-50"
+              onClick={() => setShowNotifications(!showNotifications)}
             >
-              <QuestionMarkCircleIcon className="h-5 w-5" /> Need Help
-            </a>
+              <Bell className="h-5 w-5" /> Notifications
+              {mechanicData?.notification?.length > 0 && (
+                <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 rounded-full">
+                  {mechanicData.notification.length}
+                </span>
+              )}
+            </button>
           </div>
+
           <div className="mt-6">
             <button
               onClick={() => setIsModalOpen(true)}

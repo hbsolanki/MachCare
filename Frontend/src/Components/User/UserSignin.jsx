@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getGlobalVariable } from "../../globalVariable";
-import toast, { Toaster } from "react-hot-toast"; // ✅ Import react-hot-toast
+import toast from "react-hot-toast"; // ✅ Import react-hot-toast
 
 const Backend = getGlobalVariable();
 
@@ -57,7 +57,7 @@ const UserSignin = () => {
         navigate("/user");
       }
     } catch (error) {
-      toast.error("Login failed. Please check your credentials.");
+      toast.error("Please check your credentials.");
     }
 
     setIsSubmitting(false);
@@ -65,8 +65,6 @@ const UserSignin = () => {
 
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false} />{" "}
-      {/* ✅ Toast Notification Component */}
       <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
         <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-6 sm:p-8">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">

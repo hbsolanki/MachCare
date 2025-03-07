@@ -36,6 +36,7 @@ function MechanicProfileEdit() {
         );
 
         const { location } = response.data;
+        console.log(response.data);
         setFormData({
           ...response.data,
           latitude: location?.coordinates[1] || "",

@@ -3,7 +3,10 @@ const router = express.Router();
 
 // Import Models
 const { User, Vehicle, Plan } = require("../models/index");
-const findfindNearestMechanic = require("../helper/nearestMechanic");
+const {
+  findNearestMechanic,
+  calculateDistance,
+} = require("../helper/nearestMechanic");
 
 // Import Dependencies
 const {
@@ -232,15 +235,43 @@ router
       res.status(500).json({ message: "Internal server error" });
     }
   });
-
 router
   .route("/service/need/findMechanic")
   .all(verifyToken)
   .post(async (req, res) => {
-    const { location, selectedServices } = req.body;
-    console.log(req.body);
-    const output = await findfindNearestMechanic(location, selectedServices);
-    // console.log(output);
+    try {
+      const { location, selectedServices } = req.body;
+      if (!location || !selectedServices) {
+        return res
+          .status(400)
+          .json({ message: "Location and selected services are required." });
+      }
+
+      const mechanics = await findNearestMechanic(location, selectedServices);
+
+      const mechanicNear = mechanics.map((mechanic) => {
+        const distance = calculateDistance(location, mechanic.location); // Assuming function exists
+        return {
+          _id: mechanic._id,
+          name: mechanic.name,
+          email: mechanic.email,
+          mobileNo: mechanic.mobileNo,
+          location: mechanic.location,
+          distance: distance,
+          rating: mechanic.rating,
+          grade: mechanic.grade,
+          provide_services: mechanic.provide_services.map((service) => ({
+            _id: service._id,
+            name: service.name,
+          })),
+        };
+      });
+
+      res.status(200).json(mechanicNear);
+    } catch (error) {
+      console.error("Error finding mechanics:", error);
+      res.status(500).json({ message: "Internal server error." });
+    }
   });
 
 module.exports = router;
