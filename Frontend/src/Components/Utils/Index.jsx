@@ -80,8 +80,9 @@ function Index() {
         <p className="text-lg text-gray-700 max-w-3xl mx-auto mb-10">
           Choose from flexible service plans tailored to your vehicle's needs.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {plansData.map((plan) => (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
+          {/* Displaying first, middle, and last plans */}
+          {plansData.slice(0, 3).map((plan) => (
             <PlanCard
               key={plan._id}
               title={plan.name}
@@ -90,6 +91,30 @@ function Index() {
               services={plan.services}
             />
           ))}
+        </div>
+
+        {/* Horizontal scroll for extra plans
+        <h3 className="text-2xl text-blue-900 mb-4">More Plans</h3>
+        <div className="flex overflow-x-auto gap-6">
+          {extraPlans.map((plan) => (
+            <PlanCard
+              key={plan._id}
+              title={plan.name}
+              duration={plan.duration}
+              price={`${plan.price}`}
+              services={plan.services}
+            />
+          ))}
+        </div> */}
+
+        {/* Link to more plans */}
+        <div className="mt-6">
+          <Link
+            to="/plan"
+            className="bg-blue-600 text-white py-3 px-6 rounded-lg text-lg hover:bg-blue-700 transition duration-300"
+          >
+            See All Plans
+          </Link>
         </div>
       </section>
 

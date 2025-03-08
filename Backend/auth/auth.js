@@ -26,8 +26,7 @@ function sendToken(id, email) {
   return token;
 }
 
-function verifyToken(req,res,next) {
-
+function verifyToken(req, res, next) {
   let token = req.headers.token;
   if (!token) return res.status(401).json({ message: "No token provided" });
 
@@ -35,7 +34,6 @@ function verifyToken(req,res,next) {
     const decoded = jwt.verify(token, secretKey);
     req.id = decoded.id;
     req.email = decoded.email;
-    console.log("user is verified successfully");
     next();
   } catch (e) {
     console.log("Invalid token:", e.message);

@@ -1,60 +1,129 @@
 const mongoose = require("mongoose");
-const Plan = require("./models/Plan"); // Adjust the path if needed
+const Plan = require("./models/Plan"); // Import your Plan model
+require("dotenv").config();
 
-const MONGO_URI = "mongodb://127.0.0.1:27017/MechCare"; // Replace with your actual MongoDB URI
+const DB_URL = process.env.DB_URL;
 
-const fakePlans = [
-  {
-    name: "Basic Plan",
-    price: 499,
-    duration: 30,
-    services: [
-      { name: "Basic vehicle inspection", count: 1 },
-      { name: "Oil check and top-up", count: 1 },
-      { name: "Tire pressure check", count: 2 },
-    ],
-  },
-  {
-    name: "Standard Plan",
-    price: 999,
-    duration: 90,
-    services: [
-      { name: "Full vehicle inspection", count: 1 },
-      { name: "Oil and filter change", count: 1 },
-      { name: "Brake check and adjustment", count: 2 },
-      { name: "Tire rotation", count: 2 },
-    ],
-  },
-  {
-    name: "Premium Plan",
-    price: 1999,
-    duration: 180,
-    services: [
-      { name: "Complete vehicle servicing", count: 1 },
-      { name: "Engine diagnostics", count: 2 },
-      { name: "Battery check and replacement if needed", count: 1 },
-      { name: "Wheel alignment and balancing", count: 2 },
-      { name: "Emergency roadside assistance", count: 3 },
-    ],
-  },
+// Connect to your MongoDB
+mongoose
+  .connect(DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Database connected!");
+  })
+  .catch((err) => {
+    console.error("Database connection error:", err);
+  });
+
+// List of services to be added to plans
+const services = [
+  { name: "Oil Change", price: 500 },
+  { name: "Brake Repair", price: 1500 },
+  { name: "Battery Replacement", price: 2000 },
+  { name: "Tire Alignment", price: 800 },
+  { name: "Engine Tuning", price: 3000 },
+  { name: "AC Repair", price: 1200 },
+  { name: "Clutch Repair", price: 2500 },
+  { name: "Suspension Check", price: 1800 },
+  { name: "Exhaust System Repair", price: 2200 },
+  { name: "Radiator Flush", price: 700 },
+  { name: "Transmission Repair", price: 4500 },
+  { name: "Headlight Restoration", price: 500 },
+  { name: "Car Wash & Detailing", price: 600 },
 ];
 
-mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(async () => {
-    console.log("Connected to MongoDB");
+// Function to generate fake plans
+const generateFakePlans = async () => {
+  // Delete existing plans
+  await Plan.deleteMany({});
 
-    // Clear existing plans
-    await Plan.deleteMany();
-    console.log("Existing plans removed");
+  // Create 7 fake plans with random services
+  const fakePlans = [
+    {
+      name: "Basic Maintenance Plan",
+      price: 2500,
+      duration: 6, // in months
+      services: [
+        { name: "Oil Change", count: 1 },
+        { name: "Car Wash & Detailing", count: 2 },
+        { name: "Brake Repair", count: 1 },
+      ],
+    },
+    {
+      name: "Premium Maintenance Plan",
+      price: 5000,
+      duration: 12, // in months
+      services: [
+        { name: "Oil Change", count: 2 },
+        { name: "Brake Repair", count: 2 },
+        { name: "Engine Tuning", count: 1 },
+        { name: "Suspension Check", count: 1 },
+      ],
+    },
+    {
+      name: "Basic Car Plan",
+      price: 1500,
+      duration: 3,
+      services: [
+        { name: "Headlight Restoration", count: 1 },
+        { name: "Tire Alignment", count: 1 },
+        { name: "Car Wash & Detailing", count: 1 },
+      ],
+    },
+    {
+      name: "Truck Repair Plan",
+      price: 5500,
+      duration: 9,
+      services: [
+        { name: "Engine Tuning", count: 1 },
+        { name: "Suspension Check", count: 1 },
+        { name: "Transmission Repair", count: 1 },
+      ],
+    },
+    {
+      name: "Bike Service Plan",
+      price: 3500,
+      duration: 6,
+      services: [
+        { name: "Clutch Repair", count: 1 },
+        { name: "Oil Change", count: 2 },
+        { name: "Radiator Flush", count: 1 },
+      ],
+    },
+    {
+      name: "Advanced Car Plan",
+      price: 7000,
+      duration: 12,
+      services: [
+        { name: "Battery Replacement", count: 1 },
+        { name: "Exhaust System Repair", count: 1 },
+        { name: "Transmission Repair", count: 1 },
+        { name: "Brake Repair", count: 2 },
+      ],
+    },
+    {
+      name: "All-Inclusive Plan",
+      price: 9000,
+      duration: 24,
+      services: [
+        { name: "Oil Change", count: 3 },
+        { name: "Brake Repair", count: 2 },
+        { name: "Engine Tuning", count: 1 },
+        { name: "Clutch Repair", count: 1 },
+        { name: "Suspension Check", count: 2 },
+        { name: "AC Repair", count: 1 },
+      ],
+    },
+  ];
 
-    // Insert new plans
-    await Plan.insertMany(fakePlans);
-    console.log("Fake plans added successfully");
+  // Add the fake plans to the database
+  await Plan.insertMany(fakePlans);
+  console.log("Fake plans added to the database!");
+};
 
-    mongoose.disconnect();
-  })
-  .catch((error) => {
-    console.error("Database connection error:", error);
-    mongoose.disconnect();
-  });
+// Call the function to add the fake plans
+generateFakePlans().catch((err) => {
+  console.error("Error generating fake plans:", err);
+});
