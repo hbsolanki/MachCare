@@ -19,7 +19,7 @@ const serviceSchema = new mongoose.Schema({
   vehicle: [
     {
       type: String,
-      enum: ["car", "bike"], // Ensures only these values are allowed
+      enum: ["car", "bike", "truck"], // Ensures only these values are allowed
     },
   ],
   price: {

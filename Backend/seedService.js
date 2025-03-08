@@ -1,97 +1,122 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
-const fs = require("fs");
-require("dotenv").config(); // Load environment variables
+const Service = require("./models/Service"); // Adjust path if needed
 
-// Check if the model already exists to prevent OverwriteModelError
-const Service =
-  mongoose.models.Service ||
-  mongoose.model(
-    "Service",
-    new mongoose.Schema({
-      name: { type: String, required: true, unique: true, trim: true },
-      description: { type: String, required: true, trim: true },
-      range: { type: Number, required: true },
-      vehicle: [{ type: String, enum: ["car", "bike"] }], // Added vehicle array
-      price: { type: Number, required: true },
-      service_in_plan: [{ type: mongoose.Schema.Types.ObjectId, ref: "Plan" }],
-    })
-  );
+const DB_URL = process.env.DB_URL;
 
-// Connect to MongoDB
-async function main() {
-  await mongoose.connect(process.env.DB_URL);
-  console.log("DB connection established");
-  await backupAndCreateServices();
-  mongoose.connection.close(); // Close connection after seeding
-}
+const fakeServices = [
+  {
+    name: "Oil Change",
+    description: "Full synthetic oil change",
+    range: 10,
+    vehicle: ["car", "bike"],
+    price: 500,
+  },
+  {
+    name: "Brake Repair",
+    description: "Brake pad and rotor replacement",
+    range: 20,
+    vehicle: ["car", "truck"],
+    price: 1500,
+  },
+  {
+    name: "Battery Replacement",
+    description: "New battery installation",
+    range: 30,
+    vehicle: ["car", "bike", "truck"],
+    price: 2000,
+  },
+  {
+    name: "Tire Alignment",
+    description: "Wheel balancing and alignment",
+    range: 15,
+    vehicle: ["car"],
+    price: 800,
+  },
+  {
+    name: "Engine Tuning",
+    description: "Performance tuning for better efficiency",
+    range: 25,
+    vehicle: ["car", "truck"],
+    price: 3000,
+  },
+  {
+    name: "AC Repair",
+    description: "AC gas refill and servicing",
+    range: 12,
+    vehicle: ["car"],
+    price: 1200,
+  },
+  {
+    name: "Clutch Repair",
+    description: "Clutch plate and assembly replacement",
+    range: 18,
+    vehicle: ["bike", "car"],
+    price: 2500,
+  },
+  {
+    name: "Suspension Check",
+    description: "Shocks and struts inspection",
+    range: 20,
+    vehicle: ["car", "truck"],
+    price: 1800,
+  },
+  {
+    name: "Exhaust System Repair",
+    description: "Muffler and catalytic converter repair",
+    range: 22,
+    vehicle: ["car", "truck"],
+    price: 2200,
+  },
+  {
+    name: "Radiator Flush",
+    description: "Coolant change and radiator cleaning",
+    range: 10,
+    vehicle: ["car", "bike", "truck"],
+    price: 700,
+  },
+  {
+    name: "Transmission Repair",
+    description: "Gearbox and transmission servicing",
+    range: 30,
+    vehicle: ["car", "truck"],
+    price: 4500,
+  },
+  {
+    name: "Headlight Restoration",
+    description: "Cleaning and restoring headlights",
+    range: 8,
+    vehicle: ["car", "bike"],
+    price: 500,
+  },
+  {
+    name: "Car Wash & Detailing",
+    description: "Complete exterior and interior cleaning",
+    range: 5,
+    vehicle: ["car", "bike", "truck"],
+    price: 600,
+  },
+];
 
-// Backup old services and insert new ones
-async function backupAndCreateServices() {
+const seedDatabase = async () => {
   try {
-    const oldServices = await Service.find({});
+    await mongoose.connect(DB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Connected to MongoDB");
 
-    if (oldServices.length > 0) {
-      fs.writeFileSync(
-        "backup_services.json",
-        JSON.stringify(oldServices, null, 2)
-      );
-      console.log("Backup of old services created successfully!");
-    }
+    await Service.deleteMany(); // Clears existing services
+    console.log("Old services deleted");
 
-    await Service.deleteMany({});
-    console.log("Old services removed!");
+    await Service.insertMany(fakeServices);
+    console.log("Fake services added successfully!");
 
-    const services = [
-      {
-        name: "Complete vehicle servicing",
-        description: "Full check-up",
-        range: 0,
-        vehicle: ["car", "bike"],
-        price: 200,
-        service_in_plan: [],
-      },
-      {
-        name: "Engine diagnostics",
-        description: "Engine health check",
-        range: 2,
-        vehicle: ["car"],
-        price: 100,
-        service_in_plan: [],
-      },
-      {
-        name: "Battery check",
-        description: "Check and replace battery",
-        range: 1,
-        vehicle: ["car", "bike"],
-        price: 50,
-        service_in_plan: [],
-      },
-      {
-        name: "Wheel alignment",
-        description: "Balance wheels",
-        range: 2,
-        vehicle: ["car"],
-        price: 80,
-        service_in_plan: [],
-      },
-      {
-        name: "Roadside assistance",
-        description: "Emergency help",
-        range: 3,
-        vehicle: ["car", "bike"],
-        price: 150,
-        service_in_plan: [],
-      },
-    ];
-
-    await Service.insertMany(services);
-    console.log("New fake services added successfully!");
-  } catch (err) {
-    console.error("Error updating services:", err);
+    mongoose.connection.close();
+  } catch (error) {
+    console.error("Error seeding database:", error);
+    mongoose.connection.close();
   }
-}
+};
 
-// Run script
-main().catch(console.error);
-
-module.exports = Service;
+seedDatabase();
